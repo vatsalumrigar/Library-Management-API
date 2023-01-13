@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,10 +16,42 @@ import (
 
 func UserBooksTaken(c *gin.Context) {
 
+	appsettingCollection := database.GetCollection("AppSetting")
 	bookCollection := database.GetCollection("Books")
 	userCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
 
+
+	t := time.Now().Format(time.Kitchen)
+	d := time.Now().Weekday().String()
+
+
+	settings := new(model.Timings) 
+
+	id, _ := primitive.ObjectIDFromHex("63c1398db715e13c41025cb8")
+	
+	err := appsettingCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&settings)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message":err.Error()})
+		return
+	}
+
+	for _, day := range settings.Timing {
+		
+		if day.Day == d {
+			if day.IsOpen {
+				if t < day.StartTime || t > day.CloseTime{
+					c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{ day.Day+"timings": "from:"+day.StartTime+"-"+day.CloseTime})
+					return
+				}  
+			} else {
+				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"library is closed on": day.Day})
+				return
+			}
+		}
+
+	}
 
 	//book := new(bmodel.Books)
 	//user := new(umodel.User)
