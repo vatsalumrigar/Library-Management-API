@@ -1,8 +1,8 @@
 package model
 
-
 import (
 	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -14,12 +14,13 @@ type User struct {
 	Lastname string `json:"last_name" bson:"Lastname"`
 	Email string `json:"email" bson:"Email" binding:"required"`
 	MobileNo string `json:"mobile_no" bson:"Mobile_No"`
-	Password string `json:"password" bson:"Password" binding:"required"`
+	Password string `json:"password" bson:"Password"`
 	Username string `json:"username" bson:"Username"`
 	BooksTaken []Bookdetails `json:"books_taken" bson:"Books_Taken"`
 	Status string `json:"status" bson:"Status"`
 	Dob string `json:"dob" bson:"Dob"`
 	Login bool `json:"login" bson:"Login"`
+	IsFirstLogin bool `json:"isfirstlogin" bson:"IsFirstLogin"`
 	Total_Penalty int `json:"total_penalty" bson:"Total_Penalty"`
 	Address Address `json:"address" bson:"Address"`
 	
@@ -109,4 +110,12 @@ type Bookdetail2 struct {
 	Publisher Publishers `json:"publisher" bson:"Publisher" binding:"required"`
 	Quantities int `json:"quantities" bson:"Quantities"`
 	
+}
+
+type SetNewPassword struct {
+
+	Email string `json:"email" bson:"Email" binding:"required"`	
+	OldPassword string `json:"oldpassword" bson:"OldPassword" binding:"required"`
+	NewPassword string `json:"newpassword" bson:"NewPassword" binding:"required"`
+
 }

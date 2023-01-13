@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func ReadAllBook(c *gin.Context) {
@@ -24,12 +23,17 @@ func ReadAllBook(c *gin.Context) {
 		return
 	}
 
-	//r, _ := json.Marshal(filtermodel)
-
-	//s := string(r[:])    //convert byte[] to string
-	//fmt.Println(s)
-
 	match := bson.M{}
+
+
+	queryWord := c.Request.URL.Query().Get("queryWord")
+
+	if queryWord != "" {
+
+		match = bson.M{"Title": bson.M{"$regex": queryWord, "$options": "i"}}
+
+	}
+
 	
 	if filtermodel != (model.FilterModel{})  {
 
@@ -48,6 +52,8 @@ func ReadAllBook(c *gin.Context) {
 
 		//fmt.Printf("match: %v\n", match)
 	}
+
+
 
 	// match := bson.D{{"Quantities",bson.D{{"$gt",30}}}} // use greater than
 
@@ -68,26 +74,26 @@ func ReadAllBook(c *gin.Context) {
 
 
 	//aggregation
-	groupStage := bson.D{{
-		Key: "$addFields",
-		Value: bson.D{{
-			Key:   "totalspend",
-			Value: bson.D{{Key: "$multiply", Value: bson.A{"$Quantities", "$Cost"}}},
-		}},
-	}}
+	// groupStage := bson.D{{
+	// 	Key: "$addFields",
+	// 	Value: bson.D{{
+	// 		Key:   "totalspend",
+	// 		Value: bson.D{{Key: "$multiply", Value: bson.A{"$Quantities", "$Cost"}}},
+	// 	}},
+	// }}
 
-	unsetStage := bson.D{{Key: "$unset", Value: bson.A{"_id", "Author","Publisher"}}}
+	// unsetStage := bson.D{{Key: "$unset", Value: bson.A{"_id", "Author","Publisher"}}}
 		
-	// pass the pipeline to the Aggregate() method
-	cursor1, err := bookCollection.Aggregate(ctx, mongo.Pipeline{groupStage,unsetStage})
-	if err != nil {
-		panic(err)
-	}
+	// // pass the pipeline to the Aggregate() method
+	// cursor1, err := bookCollection.Aggregate(ctx, mongo.Pipeline{groupStage,unsetStage})
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	var results []bson.M
-	if err = cursor1.All(ctx, &results); err != nil {
-		panic(err)
-	}
+	// var results []bson.M
+	// if err = cursor1.All(ctx, &results); err != nil {
+	// 	panic(err)
+	// }
 	
 	
 	cursor, _ := bookCollection.Find(ctx, match)
@@ -109,7 +115,7 @@ func ReadAllBook(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Data": result})
-	c.JSON(http.StatusOK, gin.H{"Data": results})
+	// c.JSON(http.StatusOK, gin.H{"Data": results})
 	
 
 }

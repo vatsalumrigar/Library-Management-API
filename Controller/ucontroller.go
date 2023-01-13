@@ -5,12 +5,13 @@ import (
 	model "PR_2/model"
 	"fmt"
 	"log"
+	"math/rand"
+	"strings"
+	"time"
 
 	"net/http"
-	//"time"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/go-playground/validator/v10"
 
 	database "PR_2/databases"
 	helper "PR_2/helper"
@@ -18,8 +19,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	//"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
+)
+
+var (
+    lowerCharSet   = "abcdedfghijklmnopqrst"
+    upperCharSet   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    specialCharSet = "!@#$%&*"
+    numberSet      = "0123456789"
+    allCharSet     = lowerCharSet + upperCharSet + specialCharSet + numberSet
 )
 
 //HashPassword is used to encrypt the password before it is stored in the DB
@@ -88,23 +96,34 @@ func SignUp(c *gin.Context) {
         }
 
         count, err := userCollection.CountDocuments(ctx, bson.M{"Email": user.Email})
-		fmt.Println(count)
+        fmt.Printf("count: %v\n", count)
         defer cancel()
         if err != nil {
-            log.Panic(err)
             c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while checking for the email"})
             return
         }
 
-        password := HashPassword(user.Password)
+        // password := HashPassword(user.Password)
+
+        rand.Seed(time.Now().UnixNano())
+        minSpecialChar := 1
+        minNum := 1
+        minUpperCase := 1
+        minLowerCase := 1
+        minlength := 8
+        maxlength := 15
+        passwordLength := rand.Intn(maxlength-minlength) + minlength
+
+        password := generatePassword(passwordLength, minSpecialChar, minNum, minUpperCase, minLowerCase)
 
 		user.Password = password
 		fmt.Println(password)
 
+        user.IsFirstLogin = true
+  
         count, err = userCollection.CountDocuments(ctx, bson.M{"Mobile_No": user.MobileNo})
         defer cancel()
         if err != nil {
-            log.Panic(err)
             c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while checking for the phone number"})
             return
         }
@@ -144,45 +163,99 @@ func Login(c *gin.Context) {
 
 	var userCollection = database.GetCollection("User")
 	
-		ctx, cancel := database.DbContext(10)
-        var user model.User
-        var foundUser model.User
+	ctx, cancel := database.DbContext(10)
+    var user model.User
+    var foundUser model.User
 
-        if err := c.BindJSON(&user); err != nil {
-            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-            return
-        }
-        
+    if err := c.BindJSON(&user); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
 
-        err := userCollection.FindOne(ctx, bson.M{"Email": user.Email}).Decode(&foundUser)
 
-        defer cancel()
-        if err != nil {
+    err := userCollection.FindOne(ctx, bson.M{"Email": user.Email}).Decode(&foundUser)
+
+    defer cancel()
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "login or passowrd is incorrect"})
+        return
+    }
+
+
+    fmt.Printf("user.Password: %v\n", user.Password)
+    fmt.Printf("foundUser.Password: %v\n", foundUser.Password)
+
+
+    if foundUser.IsFirstLogin {
+        if foundUser.Password != user.Password {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "login or passowrd is incorrect"})
             return
         }
+        c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"password expired": "please create new password through setnewpassword"})
+        return
+    }
 
-        passwordIsValid, msg := VerifyPassword(user.Password, foundUser.Password)
-        defer cancel()
+    passwordIsValid, msg := VerifyPassword(user.Password, foundUser.Password)
+    defer cancel()
 
-        if !passwordIsValid {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
-            return
-        }
+    if !passwordIsValid {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+        return
+    }
 
-        token, refreshToken, _ := helper.GenerateAllTokens(foundUser.Email, foundUser.Firstname, foundUser.Lastname, foundUser.ID.Hex())
+    token, refreshToken, _ := helper.GenerateAllTokens(foundUser.Email, foundUser.Firstname, foundUser.Lastname, foundUser.ID.Hex())
 
-        //helper.UpdateAllTokens(token, refreshToken, foundUser.ID.Hex())
+    //helper.UpdateAllTokens(token, refreshToken, foundUser.ID.Hex())
 
-		var res = map[string]interface{}{
-			"token" : token,
-			"refreshtoken": refreshToken, 
-		}
+	var res = map[string]interface{}{
+		"token" : token,
+		"refreshtoken": refreshToken, 
+	}
 
-        // fmt.Printf("foundUser.ID.Hex(): %v\n", foundUser.ID.Hex())
+    // fmt.Printf("foundUser.ID.Hex(): %v\n", foundUser.ID.Hex())
 
 
-        c.JSON(http.StatusOK, res)
+    c.JSON(http.StatusOK, res)
 
     
+}
+
+func generatePassword( passwordLength, minSpecialChar, minNum, minUpperCase, minLowerCase int) string {
+    
+    var password strings.Builder
+
+    //Set special character
+    for i := 0; i < minSpecialChar; i++ {
+        random := rand.Intn(len(specialCharSet))
+        password.WriteString(string(specialCharSet[random]))
+    }
+
+    //Set numeric
+    for i := 0; i < minNum; i++ {
+        random := rand.Intn(len(numberSet))
+        password.WriteString(string(numberSet[random]))
+    }
+
+    //Set uppercase
+    for i := 0; i < minUpperCase; i++ {
+        random := rand.Intn(len(upperCharSet))
+        password.WriteString(string(upperCharSet[random]))
+    }
+
+	//Set lowercase
+	for i := 0; i < minLowerCase; i++ {
+        random := rand.Intn(len(lowerCharSet))
+        password.WriteString(string(lowerCharSet[random]))
+    }
+
+    remainingLength := passwordLength - minSpecialChar - minNum - minUpperCase
+    for i := 0; i < remainingLength; i++ {
+        random := rand.Intn(len(allCharSet))
+        password.WriteString(string(allCharSet[random]))
+    }
+    inRune := []rune(password.String())
+	rand.Shuffle(len(inRune), func(i, j int) {
+		inRune[i], inRune[j] = inRune[j], inRune[i]
+	})
+	return string(inRune)
 }

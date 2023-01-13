@@ -4,7 +4,8 @@ import (
 	middleware "PR_2/Middleware"
 	database "PR_2/databases"
 	model "PR_2/model"
-	"fmt"
+	
+	"strconv"
 
 	"net/http"
 
@@ -40,6 +41,22 @@ func HistoryBook(c *gin.Context) {
 		userId := uId.(string)
 		objId, _ := primitive.ObjectIDFromHex(userId)
 
+		strOffset := c.Request.URL.Query().Get("offset")
+		offset, _ := strconv.Atoi(strOffset)
+		strPageNumber := c.Request.URL.Query().Get("pageNumber")
+		pageNumber, _ := strconv.Atoi(strPageNumber)
+
+		limit := offset
+		skip := 0
+
+
+		if pageNumber != 1{
+
+			skip = (pageNumber - 1) * limit
+
+		}
+	
+
 		var user model.Accounting
 
 		err1 := accountingCollection.FindOne(ctx, bson.M{"UserId": objId.Hex()}).Decode(&user)
@@ -66,6 +83,14 @@ func HistoryBook(c *gin.Context) {
 				"PenaltyDetails.TimePenaltyCheck" : -1,
 			},
 		}
+
+		skipCond := map[string]interface{}{
+			"$skip": skip,
+		}
+
+		limitCond := map[string]interface{}{
+			"$limit": limit,
+		}
 		// projectStage := map[string]interface{}{
 		// 	"$project": map[string]interface{}{
 		// 		"PenaltyDetails": map[string]interface{}{
@@ -83,7 +108,7 @@ func HistoryBook(c *gin.Context) {
 		// projectStage1 := bson.D{{"$project", bson.D{{"PenaltyDetails", bson.D{{"$filter", bson.D{{"input", "$PenaltyDetails"}, {"as", "user"}, {"cond", bson.D{{"$eq", bson.A{"$$user.BookTitle", booktitle.BookTitle}}}}}}}}}}}
 
 		
- 		operationsCond = append(operationsCond,unwindCond,matchCond,sortcond)
+ 		operationsCond = append(operationsCond,unwindCond,matchCond,sortcond,skipCond,limitCond)
 
 
 		cursor, err3 := accountingCollection.Aggregate(ctx, operationsCond)
@@ -99,21 +124,20 @@ func HistoryBook(c *gin.Context) {
 			return
 		}
 
+
 		phistory:= []interface{}{}
-		operationsCondcount := []interface{}{}
+		var totalDocsCount int 
 		count := 0
 
 		for _ ,p :=  range  results {
-			phistory = append(phistory, p.PenaltyDetail)
-			
-			count += 1
 
-			fmt.Printf("count: %v\n", count)
+			phistory = append(phistory, p.PenaltyDetail)
+			count += 1
 
 		}
 
-		operationsCondcount = append(operationsCondcount, count)
-		fmt.Printf("operationsCondcount: %v\n", operationsCondcount)
+		totalDocsCount = count
+		totalPageCount := totalDocsCount/offset
 
 		respModel := map[string]interface{}{
 
@@ -123,12 +147,14 @@ func HistoryBook(c *gin.Context) {
 			"PenaltyHistory": phistory,
 			"TimePenaltyPay": user.TimePenaltyPay,
 			"TotalPenalty": user.TotalPenalty,
+			"TotalPageCount": totalPageCount,
+			"TotalDocCount": totalDocsCount,
 						
 		}	
-			
-		// c.JSON(http.StatusOK, gin.H{"Data": results})
+
+		pgNumber := "Page"+ strPageNumber
 	
-		c.JSON(http.StatusOK, gin.H{"Data": respModel})
+		c.JSON(http.StatusOK, gin.H{pgNumber : respModel})
 
 	}
 

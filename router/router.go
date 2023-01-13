@@ -35,6 +35,8 @@ func Router(){
 	router.POST("UserLogin/", user.LoginUser)
 	router.POST("UserLogout/",user.LogoutUser)
 
+	router.PATCH("UserSetNewPassword/",user.SetNewPasswordUser)
+
 	router.PATCH("PenaltyUser/", user.UserPenaltyCheck)
 	router.PATCH("PenaltyPay/", user.UserPenaltyPay)
 
