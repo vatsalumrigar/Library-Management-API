@@ -3,6 +3,7 @@ package router
 import (
 	accounting "PR_2/API/Accounting"
 	admin "PR_2/API/Admin"
+	appsetting "PR_2/API/AppSetting"
 	book "PR_2/API/Books"
 	librarians "PR_2/API/Librarian"
 	user "PR_2/API/User"
@@ -59,6 +60,9 @@ func Router(){
 
 	router.POST("Accounting/penaltycheck", accounting.AccountingPenaltyCheck)
 	router.POST("Accounting/penaltypay",accounting.AccountingPenaltyPay)
+
+	router.POST("CreateSetting/",appsetting.CreateSetting)
+	router.PUT("UpdateSetting/",appsetting.UpdateSetting)
 
 	router.Run("localhost:3000")
 
