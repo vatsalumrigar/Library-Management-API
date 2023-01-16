@@ -40,14 +40,29 @@ func UserBooksTaken(c *gin.Context) {
 	for _, day := range settings.Timing {
 		
 		if day.Day == d {
+
 			if day.IsOpen {
-				if t < day.StartTime || t > day.CloseTime{
+
+				ns, _ := time.Parse(time.Kitchen, t)
+				srt, _ := time.Parse(time.Kitchen, day.StartTime)
+				end, _ := time.Parse(time.Kitchen, day.CloseTime)
+
+				// fmt.Printf("ns: %v\n", ns)
+				// fmt.Printf("srt: %v\n", srt)
+				// fmt.Printf("end: %v\n", end)
+
+				if !ns.After(srt) || !ns.Before(end) {
+
 					c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{ day.Day+"timings": "from:"+day.StartTime+"-"+day.CloseTime})
 					return
+
 				}  
+
 			} else {
+
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"library is closed on": day.Day})
 				return
+
 			}
 		}
 
