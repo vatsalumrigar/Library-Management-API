@@ -1,3 +1,16 @@
+// @title Library Management API
+// @version 1.0
+// @description This is a  Library Management API server.
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:3000
+// @BasePath /
+// @query.collection.format multi
 package librarians
 
 import (
@@ -8,7 +21,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-
+// @Summary delete librarian
+// @ID delete-librarian
+// @Produce json
+// @Param librarianId path string true "LibrarianID" 
+// @Success 201 {object} model.User
+// @Failure 500 {object} error
+// @Router /deleteLibrarian/{librarianId} [delete]
 func DeleteLibrarian(c *gin.Context) {
 
 	librarianCollection := database.GetCollection("User")

@@ -1,3 +1,16 @@
+// @title Library Management API
+// @version 1.0
+// @description This is a  Library Management API server.
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:3000
+// @BasePath /
+// @query.collection.format multi
 package book
 
 import (
@@ -10,6 +23,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// @Summary update book
+// @ID update-book
+// @Accept json
+// @Produce json
+// @Param bookId path string true "BookID"
+// @Success 201 {object} model.Books
+// @Failure 409 {object} error
+// @Failure 500 {object} error
+// @Router /updateBook/{bookId} [put]
 func UpdateBook(c *gin.Context) {
 
 	bookCollection := database.GetCollection("Books")

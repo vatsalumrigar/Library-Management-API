@@ -1,3 +1,16 @@
+// @title Library Management API
+// @version 1.0
+// @description This is a  Library Management API server.
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:3000
+// @BasePath /
+// @query.collection.format multi
 package user
 
 import (
@@ -9,6 +22,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// @Summary read all user from user collection
+// @ID read-all-user
+// @Produce json
+// @Param queryWord1 query string false "UserType"
+// @Param queryWord2 query string false "Firstname"
+// @Success 200 {object} model.User
+// @Failure 500 {object} error
+// @Router /getAllUser/ [get]
 func ReadAllUser(c *gin.Context) {
 
 	userCollection := database.GetCollection("User")

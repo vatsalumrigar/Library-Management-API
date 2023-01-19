@@ -1,3 +1,16 @@
+// @title Library Management API
+// @version 1.0
+// @description This is a  Library Management API server.
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:3000
+// @BasePath /
+// @query.collection.format multi
 package controllers
 
 import (
@@ -9,6 +22,9 @@ import (
 	"strings"
 	"time"
 
+    // swaggerFiles "github.com/swaggo/files"
+    // ginSwagger "github.com/swaggo/gin-swagger"
+    // _ "swag-gin-demo/docs"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -55,7 +71,17 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
     return check, msg
 }
 
-//CreateUser is the api used to tget a single user
+
+// @Summary signup user
+// @ID user-signup
+// @Accept json
+// @Produce json
+// @Success 200 {object} model.User
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 409 {object} error
+// @Failure 500 {object} error
+// @Router /users/signup [post]
 func SignUp(c *gin.Context) {
 
 		var userCollection = database.GetCollection("User")
@@ -158,7 +184,14 @@ func SignUp(c *gin.Context) {
     //}
 }
 
-//Login is the api used to tget a single user
+// @Summary login user
+// @ID user-login
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string][]string
+// @Failure 400 {object} error
+// @Failure 500 {object} error
+// @Router /users/login [post]
 func Login(c *gin.Context) {
 
 	var userCollection = database.GetCollection("User")

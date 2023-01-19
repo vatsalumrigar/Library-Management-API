@@ -1,0 +1,1079 @@
+definitions:
+  model.Accounting:
+    properties:
+      email:
+        type: string
+      firstname:
+        type: string
+      lastname:
+        type: string
+      penaltydetails:
+        items:
+          $ref: '#/definitions/model.Pdetails'
+        type: array
+      timepenaltypay:
+        type: integer
+      totalpenalty:
+        type: integer
+      userid:
+        type: string
+    type: object
+  model.Address:
+    properties:
+      city:
+        type: string
+      country:
+        type: string
+      pincode:
+        type: integer
+      state:
+        type: string
+      street:
+        type: string
+    type: object
+  model.Authors:
+    properties:
+      author_email:
+        type: string
+      education:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  model.Bookdetail2:
+    properties:
+      author:
+        items:
+          $ref: '#/definitions/model.Authors'
+        type: array
+      publisher:
+        $ref: '#/definitions/model.Publishers'
+      quantities:
+        type: integer
+      title:
+        type: string
+    required:
+    - publisher
+    - title
+    type: object
+  model.Bookdetails:
+    properties:
+      book_id:
+        type: string
+      time_taken:
+        type: integer
+      timepenaltycalc:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  model.Books:
+    properties:
+      _id:
+        type: string
+      author:
+        items:
+          $ref: '#/definitions/model.Authors'
+        type: array
+      cost:
+        type: integer
+      description:
+        type: string
+      genre:
+        type: string
+      penalty:
+        type: integer
+      publisher:
+        $ref: '#/definitions/model.Publishers'
+      quantities:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+    required:
+    - author
+    - description
+    - genre
+    - publisher
+    - status
+    - title
+    type: object
+  model.BooksIssued:
+    properties:
+      bookid:
+        type: string
+      booksleft:
+        type: integer
+      booktitle:
+        type: string
+      cost:
+        type: integer
+      issuedquantity:
+        type: integer
+      issuedto:
+        items:
+          $ref: '#/definitions/model.IssueDetails'
+        type: array
+    type: object
+  model.IsPenalty:
+    properties:
+      bookname:
+        items:
+          type: string
+        type: array
+      penalty:
+        type: integer
+      username:
+        type: string
+    type: object
+  model.IssueDetails:
+    properties:
+      email:
+        type: string
+      quantity:
+        type: integer
+      userid:
+        type: string
+    type: object
+  model.ParamUser:
+    properties:
+      books_taken:
+        items:
+          $ref: '#/definitions/model.Bookdetail2'
+        type: array
+      email:
+        type: string
+      user_id:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - user_id
+    - username
+    type: object
+  model.Pdetails:
+    properties:
+      booktitle:
+        type: string
+      librarianId:
+        type: string
+      penaltyamount:
+        type: integer
+      penaltypay:
+        type: boolean
+      reason:
+        type: string
+      reasontype:
+        type: integer
+      timepenaltycheck:
+        type: integer
+    type: object
+  model.Publishers:
+    properties:
+      company_name:
+        type: string
+      owner:
+        type: string
+      published_on:
+        type: string
+      publisher_email:
+        type: string
+    required:
+    - company_name
+    - owner
+    - published_on
+    type: object
+  model.Times:
+    properties:
+      closetime:
+        type: string
+      day:
+        type: string
+      isopen:
+        type: boolean
+      starttime:
+        type: string
+    type: object
+  model.Timings:
+    properties:
+      timing:
+        items:
+          $ref: '#/definitions/model.Times'
+        type: array
+    type: object
+  model.User:
+    properties:
+      _id:
+        type: string
+      address:
+        $ref: '#/definitions/model.Address'
+      books_taken:
+        items:
+          $ref: '#/definitions/model.Bookdetails'
+        type: array
+      dob:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      isfirstlogin:
+        type: boolean
+      last_name:
+        type: string
+      login:
+        type: boolean
+      mobile_no:
+        type: string
+      password:
+        type: string
+      status:
+        type: string
+      total_penalty:
+        type: integer
+      user_type:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    type: object
+info:
+  contact: {}
+paths:
+  /Accounting/penaltycheck:
+    post:
+      consumes:
+      - application/json
+      operationId: acc-penalty-check
+      parameters:
+      - description: LibrarianID
+        in: header
+        name: librarianId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Accounting'
+        "400":
+          description: Bad Request
+          schema: {}
+        "403":
+          description: Forbidden
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "406":
+          description: Not Acceptable
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: check penalty of user
+  /Accounting/penaltypay:
+    post:
+      consumes:
+      - application/json
+      operationId: acc-penalty-pay
+      parameters:
+      - description: LibrarianID
+        in: header
+        name: librarianId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Accounting'
+        "400":
+          description: Bad Request
+          schema: {}
+        "403":
+          description: Forbidden
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "406":
+          description: Not Acceptable
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: pay penalty of user
+  /Admin/:
+    post:
+      consumes:
+      - application/json
+      operationId: create-admin
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: create admin
+  /Book/:
+    post:
+      consumes:
+      - application/json
+      operationId: create-book
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Books'
+        "400":
+          description: Bad Request
+          schema: {}
+        "409":
+          description: Conflict
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: create book in book collection
+  /CreateSetting/:
+    post:
+      consumes:
+      - application/json
+      operationId: create-setting
+      parameters:
+      - description: AdminID
+        in: header
+        name: adminId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Timings'
+        "400":
+          description: Bad Request
+          schema: {}
+        "403":
+          description: Forbidden
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: create app setting
+  /Librarian/:
+    post:
+      consumes:
+      - application/json
+      operationId: create-librarian
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: create librarian
+  /PenaltyPay/:
+    patch:
+      consumes:
+      - application/json
+      operationId: users-penalty-pay
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: pay penalty of user
+  /PenaltyUser/:
+    patch:
+      consumes:
+      - application/json
+      operationId: users-penalty-check
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/model.IsPenalty'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: check penalty of users
+  /UpdateSetting/:
+    put:
+      consumes:
+      - application/json
+      operationId: update-setting
+      parameters:
+      - description: AdminID
+        in: header
+        name: adminId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Timings'
+        "400":
+          description: Bad Request
+          schema: {}
+        "403":
+          description: Forbidden
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "406":
+          description: Not Acceptable
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: update app setting
+  /User/:
+    post:
+      consumes:
+      - application/json
+      operationId: create-user
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: create user in user collection
+  /UserBookReturn/:
+    patch:
+      consumes:
+      - application/json
+      operationId: user-book-return
+      parameters:
+      - description: UserID
+        in: header
+        name: uId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: return book from user
+  /UserBookTaken/:
+    patch:
+      consumes:
+      - application/json
+      operationId: user-book-take
+      parameters:
+      - description: UserID
+        in: header
+        name: uId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: add books to user
+  /UserLogin/:
+    post:
+      consumes:
+      - application/json
+      operationId: login-user
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: login user
+  /UserLogout/:
+    post:
+      consumes:
+      - application/json
+      operationId: logout-user
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: logout user
+  /UserParam/:
+    get:
+      operationId: user-param
+      parameters:
+      - description: UserID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ParamUser'
+        "404":
+          description: Not Found
+          schema: {}
+      summary: show books taken by user
+  /UserSetNewPassword/:
+    patch:
+      consumes:
+      - application/json
+      operationId: user-set-new-password
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "406":
+          description: Not Acceptable
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: set new password for user
+  /deleteAdmin/{adminId}:
+    delete:
+      operationId: delete-admin
+      parameters:
+      - description: AdminID
+        in: path
+        name: adminId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: delete admin
+  /deleteBook/{bookId}:
+    delete:
+      operationId: delete-book
+      parameters:
+      - description: BookID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Books'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: delete book from book collection
+  /deleteLibrarian/{librarianId}:
+    delete:
+      operationId: delete-librarian
+      parameters:
+      - description: LibrarianID
+        in: path
+        name: librarianId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: delete librarian
+  /deleteUser/:
+    delete:
+      operationId: delete-one-user
+      parameters:
+      - description: UserID
+        in: header
+        name: uId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: delete one user from user collection
+  /getAllBook/:
+    get:
+      consumes:
+      - application/json
+      operationId: read-books
+      parameters:
+      - description: Book Title
+        in: query
+        name: queryWord
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Books'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: read books from book collection
+  /getAllLibrarian/:
+    get:
+      operationId: read-all-librarian
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: read all librarian
+  /getAllUser/:
+    get:
+      operationId: read-all-user
+      parameters:
+      - description: UserType
+        in: query
+        name: queryWord1
+        type: string
+      - description: Firstname
+        in: query
+        name: queryWord2
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: read all user from user collection
+  /getHistoryBook/:
+    get:
+      consumes:
+      - application/json
+      operationId: book-history
+      parameters:
+      - description: offset
+        in: path
+        name: strOffset
+        required: true
+        type: string
+      - description: pagenumber
+        in: path
+        name: strPageNumber
+        required: true
+        type: string
+      - description: UserID
+        in: header
+        name: uId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: get book history
+  /getIssuedBook/:
+    get:
+      operationId: book-issued
+      parameters:
+      - description: UserID
+        in: header
+        name: uId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BooksIssued'
+        "403":
+          description: Forbidden
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: get issued books
+  /getOneAdmin/{adminId}:
+    get:
+      operationId: read-admin
+      parameters:
+      - description: AdminID
+        in: path
+        name: adminId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: read admin
+  /getOneBook/{bookId}:
+    get:
+      operationId: read-book
+      parameters:
+      - description: BookID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Books'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: read book from book collection
+  /getOneLibrarian/{librarianId}:
+    get:
+      operationId: read-one-librarian
+      parameters:
+      - description: LibrarianID
+        in: path
+        name: librarianId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: read one librarian
+  /getOneUser/:
+    get:
+      operationId: read-one-user
+      parameters:
+      - description: UserID
+        in: header
+        name: uId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: read one user from user collection
+  /updateAdmin/{adminId}:
+    put:
+      consumes:
+      - application/json
+      operationId: update-admin
+      parameters:
+      - description: AdminID
+        in: path
+        name: adminId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: update admin
+  /updateBook/{bookId}:
+    put:
+      consumes:
+      - application/json
+      operationId: update-book
+      parameters:
+      - description: BookID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Books'
+        "409":
+          description: Conflict
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: update book
+  /updateLibrarian/{librarianId}:
+    put:
+      consumes:
+      - application/json
+      operationId: update-librarian
+      parameters:
+      - description: LibrarianID
+        in: path
+        name: librarianId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: update librarian
+  /updateUser/:
+    put:
+      consumes:
+      - application/json
+      operationId: update-user
+      parameters:
+      - description: UserID
+        in: header
+        name: uId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "409":
+          description: Conflict
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: update user in user collection
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      operationId: user-login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                type: string
+              type: array
+            type: object
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: login user
+  /users/signup:
+    post:
+      consumes:
+      - application/json
+      operationId: user-signup
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "409":
+          description: Conflict
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: signup user
+swagger: "2.0"

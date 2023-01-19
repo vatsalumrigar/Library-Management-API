@@ -1,14 +1,35 @@
+// @title Library Management API
+// @version 1.0
+// @description This is a  Library Management API server.
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:3000
+// @BasePath /
+// @query.collection.format multi
 package book
 
 import (
-	model "PR_2/model"
 	database "PR_2/databases"
+	model "PR_2/model"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// @Summary read book from book collection
+// @ID read-book
+// @Produce json
+// @Param bookId path string true "BookID"
+// @Success 200 {object} model.Books 
+// @Failure 500 {string} string 
+// @Router /getOneBook/{bookId} [get]
 func ReadOneBook(c *gin.Context) {
 
 	bookCollection := database.GetCollection("Books")

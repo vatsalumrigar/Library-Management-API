@@ -1,3 +1,16 @@
+// @title Library Management API
+// @version 1.0
+// @description This is a  Library Management API server.
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:3000
+// @BasePath /
+// @query.collection.format multi
 package user
 
 import (
@@ -10,6 +23,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// @Summary show books taken by user
+// @ID user-param
+// @Produce json
+// @Param user_id path string true "UserID"
+// @Success 200 {object} model.ParamUser
+// @Failure 404 {object} error
+// @Router /UserParam/ [get]
 func UserParam(c *gin.Context) {
 
 

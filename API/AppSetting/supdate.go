@@ -1,3 +1,16 @@
+// @title Library Management API
+// @version 1.0
+// @description This is a  Library Management API server.
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:3000
+// @BasePath /
+// @query.collection.format multi
 package appsetting
 
 import (
@@ -11,6 +24,18 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// @Summary update app setting
+// @ID update-setting
+// @Accept json
+// @Produce json
+// @Param adminId header string true "AdminID"
+// @Success 201 {object} model.Timings
+// @Failure 400 {object} error
+// @Failure 403 {object} error
+// @Failure 404 {object} error
+// @Failure 406 {object} error
+// @Failure 500 {object} error
+// @Router /UpdateSetting/ [put]
 func UpdateSetting(c *gin.Context){
 
 	if middleware.Authentication(c){

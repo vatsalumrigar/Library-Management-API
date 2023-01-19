@@ -10,10 +10,16 @@ import (
 	controllers "PR_2/Controller"
 
 	"github.com/gin-gonic/gin"
+
+	_ "PR_2/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func Router(){
+func Router() {
 
+	// configure the Gin server
 	router := gin.Default()
 	 
 	router.POST("Book/", book.CreateBook)
@@ -45,7 +51,6 @@ func Router(){
 
 	router.POST("Admin/", admin.CreateAdmin)
 	router.GET("getOneAdmin/:adminId", admin.ReadOneAdmin) 
-	router.GET("getAllAdmin/", admin.ReadAllAdmin)
 	router.PUT("/updateAdmin/:adminId", admin.UpdateAdmin)
 	router.DELETE("/deleteAdmin/:adminId", admin.DeleteAdmin)
 
@@ -64,6 +69,10 @@ func Router(){
 	router.POST("CreateSetting/",appsetting.CreateSetting)
 	router.PUT("UpdateSetting/",appsetting.UpdateSetting)
 
+	// docs route
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// run the Gin server
 	router.Run("localhost:3000")
 
 }
