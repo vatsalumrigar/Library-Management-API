@@ -10,7 +10,11 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -33,6 +37,15 @@ const docTemplate = `{
                         "name": "librarianId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Query Payload for Penalty Check API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Payload"
+                        }
                     }
                 ],
                 "responses": {
@@ -82,6 +95,15 @@ const docTemplate = `{
                         "name": "librarianId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Query Payload for Penalty Pay API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PenaltyPay"
+                        }
                     }
                 ],
                 "responses": {
@@ -124,6 +146,17 @@ const docTemplate = `{
                 ],
                 "summary": "create admin",
                 "operationId": "create-admin",
+                "parameters": [
+                    {
+                        "description": "Query Payload for create Admin API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Admin"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -152,6 +185,17 @@ const docTemplate = `{
                 ],
                 "summary": "create book in book collection",
                 "operationId": "create-book",
+                "parameters": [
+                    {
+                        "description": "Query Payload for create Book API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Books"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -191,6 +235,15 @@ const docTemplate = `{
                         "name": "adminId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Query Payload for create App Timings API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Timings"
+                        }
                     }
                 ],
                 "responses": {
@@ -225,6 +278,17 @@ const docTemplate = `{
                 ],
                 "summary": "create librarian",
                 "operationId": "create-librarian",
+                "parameters": [
+                    {
+                        "description": "Payload for create Librarian API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -253,6 +317,17 @@ const docTemplate = `{
                 ],
                 "summary": "pay penalty of user",
                 "operationId": "users-penalty-pay",
+                "parameters": [
+                    {
+                        "description": "Payload for Penalty Pay API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PenaltyPay"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -281,6 +356,17 @@ const docTemplate = `{
                 ],
                 "summary": "check penalty of users",
                 "operationId": "users-penalty-check",
+                "parameters": [
+                    {
+                        "description": "Payload for Penalty Users API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PenaltyUsers"
+                        }
+                    }
+                ],
                 "responses": {
                     "202": {
                         "description": "Accepted",
@@ -316,6 +402,15 @@ const docTemplate = `{
                         "name": "adminId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Query Payload for update App Timings API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Timings"
+                        }
                     }
                 ],
                 "responses": {
@@ -358,6 +453,17 @@ const docTemplate = `{
                 ],
                 "summary": "create user in user collection",
                 "operationId": "create-user",
+                "parameters": [
+                    {
+                        "description": "Payload for create User API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -389,6 +495,15 @@ const docTemplate = `{
                         "name": "uId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Payload for User Book Return API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserBook"
+                        }
                     }
                 ],
                 "responses": {
@@ -430,6 +545,15 @@ const docTemplate = `{
                         "name": "uId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Payload for User Book Taken API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserBook"
+                        }
                     }
                 ],
                 "responses": {
@@ -437,70 +561,6 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.User"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/UserLogin/": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "login user",
-                "operationId": "login-user",
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/UserLogout/": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "logout user",
-                "operationId": "logout-user",
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "type": "string"
                         }
                     },
                     "400": {
@@ -558,6 +618,17 @@ const docTemplate = `{
                 ],
                 "summary": "set new password for user",
                 "operationId": "user-set-new-password",
+                "parameters": [
+                    {
+                        "description": "Payload for Set New Password API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SetNewPassword"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -720,6 +791,14 @@ const docTemplate = `{
                         "description": "Book Title",
                         "name": "queryWord",
                         "in": "query"
+                    },
+                    {
+                        "description": "Query Payload for Read All Books API",
+                        "name": "payload",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.FilterModel"
+                        }
                     }
                 ],
                 "responses": {
@@ -827,6 +906,15 @@ const docTemplate = `{
                         "name": "uId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Query Payload for Book History API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.HistoryPayload"
+                        }
                     }
                 ],
                 "responses": {
@@ -1036,6 +1124,15 @@ const docTemplate = `{
                         "name": "adminId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Query Payload for update Admin API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Admin"
+                        }
                     }
                 ],
                 "responses": {
@@ -1073,6 +1170,15 @@ const docTemplate = `{
                         "name": "bookId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Payload for update Books API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Books"
+                        }
                     }
                 ],
                 "responses": {
@@ -1110,6 +1216,15 @@ const docTemplate = `{
                         "name": "librarianId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Payload for update Librarian API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
                     }
                 ],
                 "responses": {
@@ -1147,6 +1262,15 @@ const docTemplate = `{
                         "name": "uId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Payload for update user API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
                     }
                 ],
                 "responses": {
@@ -1175,8 +1299,19 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "login user",
-                "operationId": "user-login",
+                "summary": "logout user",
+                "operationId": "user-logout",
+                "parameters": [
+                    {
+                        "description": "Payload for logout API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Logout"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1211,6 +1346,17 @@ const docTemplate = `{
                 ],
                 "summary": "signup user",
                 "operationId": "user-signup",
+                "parameters": [
+                    {
+                        "description": "Payload for Signup API",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1284,6 +1430,58 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "street": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Admin": {
+            "type": "object",
+            "required": [
+                "dob",
+                "email",
+                "first_name",
+                "last_name",
+                "login",
+                "mobile_no",
+                "password",
+                "user_type",
+                "username"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "address": {
+                    "$ref": "#/definitions/model.Address"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "boolean"
+                },
+                "mobile_no": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "user_type": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -1421,6 +1619,31 @@ const docTemplate = `{
                 }
             }
         },
+        "model.FilterModel": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "genre": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.HistoryPayload": {
+            "type": "object",
+            "properties": {
+                "booktitle": {
+                    "type": "string"
+                }
+            }
+        },
         "model.IsPenalty": {
             "type": "object",
             "properties": {
@@ -1452,6 +1675,32 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Login": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Logout": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ParamUser": {
             "type": "object",
             "required": [
@@ -1473,6 +1722,24 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Payload": {
+            "type": "object",
+            "required": [
+                "penaltydetail",
+                "userid"
+            ],
+            "properties": {
+                "penaltydetail": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PenaltyDetails"
+                    }
+                },
+                "userid": {
                     "type": "string"
                 }
             }
@@ -1503,6 +1770,46 @@ const docTemplate = `{
                 }
             }
         },
+        "model.PenaltyDetails": {
+            "type": "object",
+            "properties": {
+                "booktitle": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.PenaltyPay": {
+            "type": "object",
+            "required": [
+                "pay_amount",
+                "username"
+            ],
+            "properties": {
+                "pay_amount": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PenaltyUsers": {
+            "type": "object",
+            "required": [
+                "user_id"
+            ],
+            "properties": {
+                "user_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model.Publishers": {
             "type": "object",
             "required": [
@@ -1521,6 +1828,25 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "publisher_email": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SetNewPassword": {
+            "type": "object",
+            "required": [
+                "email",
+                "newpassword",
+                "oldpassword"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "newpassword": {
+                    "type": "string"
+                },
+                "oldpassword": {
                     "type": "string"
                 }
             }
@@ -1608,18 +1934,30 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "model.UserBook": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "title": {
+                    "description": "User_Id string ` + "`" + `json:\"user_id\" bson:\"User_Id\" binding:\"required\"` + "`" + `",
+                    "type": "string"
+                }
+            }
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "localhost:3000",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Library Management API",
+	Description:      "This is a  Library Management API server.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

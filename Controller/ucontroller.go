@@ -1,16 +1,3 @@
-// @title Library Management API
-// @version 1.0
-// @description This is a  Library Management API server.
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-
-// @host localhost:3000
-// @BasePath /
-// @query.collection.format multi
 package controllers
 
 import (
@@ -22,9 +9,6 @@ import (
 	"strings"
 	"time"
 
-    // swaggerFiles "github.com/swaggo/files"
-    // ginSwagger "github.com/swaggo/gin-swagger"
-    // _ "swag-gin-demo/docs"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -76,6 +60,7 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
 // @ID user-signup
 // @Accept json
 // @Produce json
+// @Param payload body model.User true "Payload for Signup API"
 // @Success 200 {object} model.User
 // @Failure 400 {object} error
 // @Failure 404 {object} error
@@ -188,6 +173,7 @@ func SignUp(c *gin.Context) {
 // @ID user-login
 // @Accept json
 // @Produce json
+// @Param payload body model.Login true "Payload for login API"
 // @Success 200 {object} map[string][]string
 // @Failure 400 {object} error
 // @Failure 500 {object} error
@@ -197,7 +183,7 @@ func Login(c *gin.Context) {
 	var userCollection = database.GetCollection("User")
 	
 	ctx, cancel := database.DbContext(10)
-    var user model.User
+    var user model.Login
     var foundUser model.User
 
     if err := c.BindJSON(&user); err != nil {
@@ -213,11 +199,6 @@ func Login(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "login or passowrd is incorrect"})
         return
     }
-
-
-    fmt.Printf("user.Password: %v\n", user.Password)
-    fmt.Printf("foundUser.Password: %v\n", foundUser.Password)
-
 
     if foundUser.IsFirstLogin {
         if foundUser.Password != user.Password {
@@ -235,6 +216,16 @@ func Login(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
         return
     }
+
+    match := bson.M{"Email": foundUser.Email}
+    update := bson.M{"Login": true}
+ 
+    _, err1 := userCollection.UpdateOne(ctx,match,bson.M{"$set":update})
+    
+    if err1 != nil {
+         c.JSON(http.StatusInternalServerError, gin.H{"error": err1.Error()})
+         return
+     }
 
     token, refreshToken, _ := helper.GenerateAllTokens(foundUser.Email, foundUser.Firstname, foundUser.Lastname, foundUser.ID.Hex())
 

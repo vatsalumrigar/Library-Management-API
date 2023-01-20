@@ -1,16 +1,3 @@
-// @title Library Management API
-// @version 1.0
-// @description This is a  Library Management API server.
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-
-// @host localhost:3000
-// @BasePath /
-// @query.collection.format multi
 package book
 
 import (
@@ -34,6 +21,7 @@ import (
 // @Param strOffset path string true "offset"
 // @Param strPageNumber path string true "pagenumber"
 // @Param uId header string true "UserID"
+// @Param payload body model.HistoryPayload true "Query Payload for Book History API"
 // @Success 200 {object} string
 // @Failure 400 {object} error
 // @Failure 404 {object} error

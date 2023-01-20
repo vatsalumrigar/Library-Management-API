@@ -58,7 +58,7 @@ type UserBook struct {
 
 type Login struct {
 
-	Login string `json:"login" bson:"Login" binding:"required"`	
+	Email string `json:"email" bson:"Email" binding:"required"`	
 	Password string `json:"password" bson:"Password" binding:"required"`
 	
 }

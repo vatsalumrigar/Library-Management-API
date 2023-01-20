@@ -1,16 +1,3 @@
-// @title Library Management API
-// @version 1.0
-// @description This is a  Library Management API server.
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-
-// @host localhost:3000
-// @BasePath /
-// @query.collection.format multi
 package appsetting
 
 import (
@@ -29,6 +16,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param adminId header string true "AdminID"
+// @Param payload body model.Timings true "Query Payload for create App Timings API"
 // @Success 201 {object} model.Timings
 // @Failure 400 {object} error
 // @Failure 403 {object} error

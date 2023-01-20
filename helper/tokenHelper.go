@@ -46,6 +46,7 @@ func GenerateAllTokens(email string, firstName string, lastName string, uid stri
         },
     }
 
+
     token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
 
 
@@ -59,6 +60,8 @@ func GenerateAllTokens(email string, firstName string, lastName string, uid stri
     return token, refreshToken, err
 }
 
+
+
 //ValidateToken validates the jwt token
 func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
 
@@ -69,7 +72,6 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
             return []byte(SECRET_KEY), nil
         },
     )
-
     if err != nil {
         msg = err.Error()
         return
@@ -80,9 +82,9 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
         msg = "the token is invalid"
 		fmt.Println(msg)
         msg = err.Error()
-	
         return
     }
+
 
     if claims.ExpiresAt < time.Now().Local().Unix() {
         msg = "token is expired"
@@ -132,6 +134,4 @@ func UpdateAllTokens(signedToken string, signedRefreshToken string, userId strin
         return
     }
 
-   
-    //return
 }											

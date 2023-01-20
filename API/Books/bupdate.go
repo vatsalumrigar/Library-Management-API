@@ -1,16 +1,3 @@
-// @title Library Management API
-// @version 1.0
-// @description This is a  Library Management API server.
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-
-// @host localhost:3000
-// @BasePath /
-// @query.collection.format multi
 package book
 
 import (
@@ -28,6 +15,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param bookId path string true "BookID"
+// @Param payload body model.Books true "Payload for update Books API"
 // @Success 201 {object} model.Books
 // @Failure 409 {object} error
 // @Failure 500 {object} error

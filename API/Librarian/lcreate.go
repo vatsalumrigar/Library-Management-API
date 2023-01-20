@@ -1,22 +1,10 @@
-// @title Library Management API
-// @version 1.0
-// @description This is a  Library Management API server.
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-
-// @host localhost:3000
-// @BasePath /
-// @query.collection.format multi
 package librarians
 
 import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -25,6 +13,7 @@ import (
 // @ID create-librarian
 // @Accept json
 // @Produce json
+// @Param payload body model.User true "Payload for create Librarian API"
 // @Success 201 {object} model.User
 // @Failure 400 {object} error
 // @Failure 500 {object} error
@@ -34,7 +23,7 @@ func CreateLibrarian(c *gin.Context){
 	librarianCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
 
-	librarian := new(model.Librarian)
+	librarian := new(model.User)
 
 	defer cancel()
 
@@ -51,7 +40,7 @@ func CreateLibrarian(c *gin.Context){
 	} */
 
 
-	addedLibrarian := model.Librarian {
+	addedLibrarian := model.User {
 			
 		ID: primitive.NewObjectID(),
 		UserType: librarian.UserType,
