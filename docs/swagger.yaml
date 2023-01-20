@@ -204,13 +204,6 @@ definitions:
     - email
     - password
     type: object
-  model.Logout:
-    properties:
-      email:
-        type: string
-    required:
-    - email
-    type: object
   model.ParamUser:
     properties:
       books_taken:
@@ -1245,14 +1238,14 @@ paths:
     post:
       consumes:
       - application/json
-      operationId: user-logout
+      operationId: user-login
       parameters:
-      - description: Payload for logout API
+      - description: Payload for login API
         in: body
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/model.Logout'
+          $ref: '#/definitions/model.Login'
       produces:
       - application/json
       responses:
@@ -1270,7 +1263,7 @@ paths:
         "500":
           description: Internal Server Error
           schema: {}
-      summary: logout user
+      summary: login user
   /users/signup:
     post:
       consumes:

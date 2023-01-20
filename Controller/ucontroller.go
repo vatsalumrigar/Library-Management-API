@@ -20,6 +20,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"golang.org/x/crypto/bcrypt"
+
+    logs "github.com/sirupsen/logrus"
 )
 
 var (
@@ -35,6 +37,7 @@ func HashPassword(password string) string {
     bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
     if err != nil {
         log.Panic(err)
+        logs.Error(err)
     }
 
     return string(bytes)
@@ -47,9 +50,9 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
     msg := ""
 
     if err != nil {
-        msg = "login or passowrd is incorrect"
+        msg = "passowrd is incorrect"
         check = false
-		fmt.Println(msg)
+        logs.Error(msg)
     }
 
     return check, msg
@@ -75,6 +78,7 @@ func SignUp(c *gin.Context) {
 
         if err := c.BindJSON(&user); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            logs.Error(err.Error())
             return
         }
 
@@ -92,15 +96,18 @@ func SignUp(c *gin.Context) {
 
                     if !err1 {
                         c.JSON(http.StatusNotFound, gin.H{"message": err1})
+                        logs.Error(err1)
                         return
                     }
                 }else {
                     c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error":"enter admin token in header"})
+                    logs.Error("enter admin token in header")
                     return
                 }
         
             }else {
                 c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error":"admin not logged in"})
+                logs.Error("admin not logged in")
                 return
             }
 
@@ -111,6 +118,7 @@ func SignUp(c *gin.Context) {
         defer cancel()
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while checking for the email"})
+            logs.Error("error occured while checking for the email")
             return
         }
 
@@ -136,11 +144,13 @@ func SignUp(c *gin.Context) {
         defer cancel()
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while checking for the phone number"})
+            logs.Error("error occured while checking for the phone number")
             return
         }
 
         if count > 0 {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "this email or phone number already exists"})
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "the email or phone number already exists"})
+            logs.Error("the email or phone number already exists")
             return
         }
 
@@ -159,7 +169,7 @@ func SignUp(c *gin.Context) {
         if insertErr != nil {
             msg := "User item was not created"
             c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
-			fmt.Println(msg)
+			logs.Error(msg)
             return
         }
         defer cancel()
@@ -188,6 +198,7 @@ func Login(c *gin.Context) {
 
     if err := c.BindJSON(&user); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        logs.Error(err.Error())
         return
     }
 
@@ -196,16 +207,19 @@ func Login(c *gin.Context) {
 
     defer cancel()
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "login or passowrd is incorrect"})
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        logs.Error(err.Error())
         return
     }
 
     if foundUser.IsFirstLogin {
         if foundUser.Password != user.Password {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "login or passowrd is incorrect"})
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "passowrd is incorrect"})
+            logs.Error("passowrd is incorrect")
             return
         }
         c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"password expired": "please create new password through setnewpassword"})
+        logs.Error("password expired, please create new password through setnewpassword")
         return
     }
 
@@ -214,6 +228,7 @@ func Login(c *gin.Context) {
 
     if !passwordIsValid {
         c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+        logs.Error(msg)
         return
     }
 
@@ -223,8 +238,9 @@ func Login(c *gin.Context) {
     _, err1 := userCollection.UpdateOne(ctx,match,bson.M{"$set":update})
     
     if err1 != nil {
-         c.JSON(http.StatusInternalServerError, gin.H{"error": err1.Error()})
-         return
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err1.Error()})
+        logs.Error(msg)
+        return
      }
 
     token, refreshToken, _ := helper.GenerateAllTokens(foundUser.Email, foundUser.Firstname, foundUser.Lastname, foundUser.ID.Hex())

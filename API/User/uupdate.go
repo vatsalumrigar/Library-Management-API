@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
+
 )
 
 // @Summary update user in user collection
@@ -33,6 +35,7 @@ func UpdateUser(c *gin.Context) {
 
 		if !err3 {
 			c.JSON(http.StatusNotFound, gin.H{"message": err3})
+			logs.Error(err3)
 			return
 		}
 
@@ -47,6 +50,7 @@ func UpdateUser(c *gin.Context) {
 		
 		if err := c.BindJSON(&user); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err})
+			logs.Error(err.Error())
 			return
 		}
 
@@ -71,6 +75,7 @@ func UpdateUser(c *gin.Context) {
 
 		if val != nil {
 			c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": val.Error() })
+			logs.Error(val.Error())
 			return
 		} 
 
@@ -80,11 +85,13 @@ func UpdateUser(c *gin.Context) {
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+			logs.Error(err.Error())
 			return
 			}
 
 		if result.MatchedCount < 1 {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
+			logs.Error("Data doesn't exist")
 			return
 		}
 				

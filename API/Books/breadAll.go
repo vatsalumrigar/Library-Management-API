@@ -4,7 +4,7 @@ import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	"net/http"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -29,7 +29,8 @@ func ReadAllBook(c *gin.Context) {
 	var filtermodel model.FilterModel
 
 	if err:= c.ShouldBind(&filtermodel); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		logs.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -115,7 +116,8 @@ func ReadAllBook(c *gin.Context) {
 		err := cursor.Decode(&resl)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message":err})
+			logs.Error(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error()})
 			return
 		}
 
@@ -125,7 +127,7 @@ func ReadAllBook(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Data": result})
-	// c.JSON(http.StatusOK, gin.H{"Data": results})
+
 	
 
 }

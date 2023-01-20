@@ -3,7 +3,7 @@ package middleware
 import (
 	helper "PR_2/helper"
 
-
+    logs "github.com/sirupsen/logrus"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,6 +18,7 @@ func Authentication(c *gin.Context) bool {
         if clientToken == "" {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "No Authorization header provided"})
             c.Abort()
+            logs.Error("No Authorization header provided")
             return false
         }
 
@@ -26,6 +27,7 @@ func Authentication(c *gin.Context) bool {
         if err != "" {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err})
             c.Abort()
+            logs.Error("No Authorization header provided")
             return false 
         }
 

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -40,6 +40,7 @@ func AccountingPenaltyPay(c *gin.Context){
 
 	if err:= c.BindJSON(&penaltypay); err != nil {
 
+		logs.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": err})
 		return
 
@@ -50,6 +51,7 @@ func AccountingPenaltyPay(c *gin.Context){
 		lId,err := c.Get("uid")
 
 		if !err {
+			logs.Error(err)
 			c.JSON(http.StatusNotFound, gin.H{"message": err})
 			return
 		}
@@ -62,11 +64,13 @@ func AccountingPenaltyPay(c *gin.Context){
 		err1 := userCollection.FindOne(ctx, bson.M{"_Id": objId1}).Decode(&lib)
 		
 		if err1 != nil {
+			logs.Error(err1.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err1})
 			return
 		}
 
 		if lib.UserType != "Librarian"{
+			logs.Error("enter valid librairian token")
 			c.JSON(http.StatusForbidden, gin.H{"message": "enter valid librairian token"})
 			return
 		}
@@ -76,11 +80,13 @@ func AccountingPenaltyPay(c *gin.Context){
 		err2 := userCollection.FindOne(ctx, bson.M{"Username": penaltypay.Username}).Decode(&user)
 	
 		if err2 != nil {
+			logs.Error(err2.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err2})
 			return
 		}
 
 		if user.Total_Penalty == 0 {
+			logs.Error("user has no pending penalty")
 			c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": "user has no pending penalty"})
 			return
 		}
@@ -102,8 +108,9 @@ func AccountingPenaltyPay(c *gin.Context){
 	
 	
 				if err3 != nil {
-							
-					c.JSON(http.StatusInternalServerError, gin.H{"message": err3})
+						
+					logs.Error(err3.Error())
+					c.JSON(http.StatusInternalServerError, gin.H{"message": err3.Error()})
 					return
 	
 				}
@@ -113,7 +120,8 @@ func AccountingPenaltyPay(c *gin.Context){
 			err4 := accountingCollection.FindOne(ctx, bson.M{"Email": user.Email}).Decode(&accountinguser)
 
 			if err4 != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"message": err4})
+				logs.Error(err4.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err4.Error()})
 				return
 			}
 
@@ -126,6 +134,7 @@ func AccountingPenaltyPay(c *gin.Context){
 				err5 := bookCollection.FindOne(ctx, bson.M{"Title": booktitle}).Decode(&foundbook)
 		
 				if err5 != nil {
+					logs.Error(err5.Error())
 					c.JSON(http.StatusInternalServerError, gin.H{"message": "could not find book"})
 					return
 				}
@@ -146,7 +155,7 @@ func AccountingPenaltyPay(c *gin.Context){
 				_, err := userCollection.UpdateOne(ctx, match, change)
 	
 				if err != nil {
-			
+					logs.Error(err.Error())
 					c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":"cannot update usercollection"})
 					return
 
@@ -172,6 +181,7 @@ func AccountingPenaltyPay(c *gin.Context){
 		
 					if err6!= nil {
 		
+						logs.Error(err6.Error())
 						c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":"cannot update bookcollection"})
 						return
 
@@ -198,6 +208,7 @@ func AccountingPenaltyPay(c *gin.Context){
 	
 				if err7 != nil {
 							
+					logs.Error(err7.Error())
 					c.JSON(http.StatusInternalServerError, gin.H{"message": err7})
 					return
 	
@@ -209,6 +220,7 @@ func AccountingPenaltyPay(c *gin.Context){
 	
 		} else {
 	
+			logs.Error("amount pay should be equal to total penalty:", user.Total_Penalty)
 			c.JSON(http.StatusInternalServerError, gin.H{"amount pay should be equal to total penalty": user.Total_Penalty})
 			return
 	

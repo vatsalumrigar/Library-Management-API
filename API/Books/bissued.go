@@ -6,7 +6,7 @@ import (
 	model "PR_2/model"
 	"fmt"
 	"net/http"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -34,6 +34,7 @@ func IssuedBook(c *gin.Context){
 		lId,err := c.Get("uid")
 
 		if !err {
+			logs.Error(err)
 			c.JSON(http.StatusNotFound, gin.H{"message": err})
 			return
 		}
@@ -46,11 +47,13 @@ func IssuedBook(c *gin.Context){
 		err1 := userCollection.FindOne(ctx, bson.M{"_Id": objId1}).Decode(&lib)
 		
 		if err1 != nil {
+			logs.Error(err1.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err1})
 			return
 		}
 
 		if lib.UserType != "Librarian"{
+			logs.Error("enter valid librairian token")
 			c.JSON(http.StatusForbidden, gin.H{"message": "enter valid librairian token"})
 			return
 		}
@@ -65,6 +68,7 @@ func IssuedBook(c *gin.Context){
 			err:= cursor.Decode(&book)
 			if err != nil{
 
+				logs.Error(err.Error())
 				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 				return
 
@@ -85,6 +89,7 @@ func IssuedBook(c *gin.Context){
 
 				if er != nil {
 	
+					logs.Error(er.Error())
 					c.JSON(http.StatusInternalServerError, gin.H{"message": er.Error()})
 					return
 	

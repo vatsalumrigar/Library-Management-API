@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary update admin
@@ -34,7 +35,8 @@ func UpdateAdmin(c *gin.Context) {
 	objId, _ := primitive.ObjectIDFromHex(adminId)
 	
 	if err := c.BindJSON(&admin); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err})
+		logs.Error(err.Error())
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -66,11 +68,13 @@ func UpdateAdmin(c *gin.Context) {
 	res := map[string]interface{}{"data": result}
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+		logs.Error(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 		}
 
 	if result.MatchedCount < 1 {
+		logs.Error("Data doesn't exist")
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
 		return
 	}

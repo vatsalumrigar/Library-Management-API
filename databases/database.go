@@ -7,6 +7,7 @@ import (
 	"errors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	logs "github.com/sirupsen/logrus"
 )
 
 type Connection struct {
@@ -27,6 +28,7 @@ func NewConnection() error {
 	mongoDatabase := "pr1"
 
 	if mongoUrl == "" || mongoDatabase == "" {
+		logs.Error("configuration is missing for mongodb")
 		return errors.New("configuration is missing for mongodb")
 	}
 
@@ -42,10 +44,12 @@ func NewConnection() error {
 	var err error
 	mongoClient.Conn, err = mongo.Connect(ctx, clientOptions)
 	if err != nil {
+		logs.Error("cannot connect new client to db")
 		return err
 	}
 	err = mongoClient.Conn.Ping(context.TODO(), nil)
 	if err != nil {
+		logs.Error(err)
 		return err
 	}
 

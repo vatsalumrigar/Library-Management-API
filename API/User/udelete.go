@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary delete one user from user collection
@@ -29,6 +30,7 @@ func DeleteUser(c *gin.Context) {
 		uId , err1 := c.Get("uId")
 
 		if !err1 {
+			logs.Error(err1)
 			c.JSON(http.StatusNotFound, gin.H{"message": err1})
 			return
 		}
@@ -41,11 +43,13 @@ func DeleteUser(c *gin.Context) {
 		res := map[string]interface{}{"data": result}
 
 		if err != nil {
+			logs.Error(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err})
 			return
 		}
 		
 		if result.DeletedCount < 1 {
+			logs.Error("No data to delete")
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "No data to delete"})
 			return
 		}

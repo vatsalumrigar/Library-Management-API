@@ -4,9 +4,8 @@ import (
 	database "PR_2/databases"
 	"context"
 	"errors"
-	"fmt"
 	"regexp"
-
+	logs "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -22,9 +21,9 @@ func ValidateBmodel(ctx context.Context, e1 string, e2 string, p string) error {
 	if author_email == "" || publisher_email == "" {
 
 		if author_email == ""{
-			fmt.Println("error: author email empty")
+			logs.Error("error: author email empty")
 		} else {
-			fmt.Println("error: publisher email empty")
+			logs.Error("error: author email empty")
 		}
 		return errors.New("author or publisher email cannot be empty")
 
@@ -32,21 +31,22 @@ func ValidateBmodel(ctx context.Context, e1 string, e2 string, p string) error {
 
 	if !email_pattern.Match([]byte(author_email)) {
 
-		fmt.Println("error: change author email : ",author_email)
+		// fmt.Println("error: change author email : ",author_email)
+		logs.Error("error: change author email : ",author_email)
 		return errors.New("enter valid author email address")
 
 	}
 
 	if !email_pattern.Match([]byte(publisher_email)) {
 
-		fmt.Println("error: change publisher email : ",publisher_email)
+		// fmt.Println("error: change publisher email : ",publisher_email)
+		logs.Error("error: change publisher email : ",publisher_email)
 		return errors.New("enter valid publisher email address")
 
 	}
 
 	if !published_on_pattern.Match([]byte(published_on)) {
-
-		fmt.Println("error: date format should be dd/mm/yyyy",published_on)
+		logs.Error("error: date format should be dd/mm/yyyy : ",published_on)
 		return errors.New("date format should be dd/mm/yyyy ")
 
 	}
@@ -79,54 +79,56 @@ func ValidateUmodel(ctx context.Context, e string, u string, m string, d string,
 
 
 	if username == "" {
-		fmt.Println("error: username cannot be empty")
+
+		logs.Error("error: username cannot be empty")
 		return errors.New("username cannot be empty")
 
 	}
 
 	if count_username >= 1 {
-		fmt.Println("error: username already exists")
+		
+		logs.Error("error: username already exists")
 		return errors.New("username already exists")
 		
 	}
 
 	if email == "" {
-		fmt.Println("error: user email cannot be empty")
+		logs.Error("error: user email cannot be empty")
 		return errors.New("user email cannot be empty")
 
 	}
 
 	if count_email >= 1 {
-		fmt.Println("error: user email already exists")
+		logs.Error("error: user email already exists")
 		return errors.New("user email already exists")
 
 	}
 
 	if !email_pattern.Match([]byte(email)) {
-		fmt.Println("error: enter valid email address")
+		logs.Error("error: enter valid email address")
 		return errors.New("enter valid email address")
 
 	}
 
 	if count_mobile_no >= 1 {
-		fmt.Println("error: mobile number already exists")
+		logs.Error("error: mobile number already exists")
 		return errors.New("mobile number already exists")
 
 	}
 
 	if !mobile_pattern.Match([]byte(mobile_no)) {
-		fmt.Println("error: enter valid mobile number")
+		logs.Error("error: enter valid mobile number")
 		return errors.New("enter valid mobile number")
 
 	}
 
 	if !dob_pattern.Match([]byte(dob)) {
-		fmt.Println("error: date format incorrect")
+		logs.Error("error: date format incorrect")
 		return errors.New("date format incorrect")
 	}
 
 	if status != "Available" && status != "Unavailable" {
-		fmt.Println("error: user status should be: Available/Unavailabe")
+		logs.Error("error: user status should be: Available/Unavailabe")
 		return errors.New("user status should be: Available/Unavailabe")
 	}
 

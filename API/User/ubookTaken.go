@@ -5,10 +5,10 @@ import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	"fmt"
-	"log"
+
 	"net/http"
 	"time"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -44,6 +44,7 @@ func UserBooksTaken(c *gin.Context) {
 	err := appsettingCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&settings)
 
 	if err != nil {
+		logs.Error(err.Error())
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message":err.Error()})
 		return
 	}
@@ -63,7 +64,7 @@ func UserBooksTaken(c *gin.Context) {
 				// fmt.Printf("end: %v\n", end)
 
 				if !ns.After(srt) || !ns.Before(end) {
-
+					logs.Error(day.Day+"timings:"+"from -"+day.StartTime+"to"+day.CloseTime)
 					c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{ day.Day+"timings": "from:"+day.StartTime+"-"+day.CloseTime})
 					return
 
@@ -71,7 +72,8 @@ func UserBooksTaken(c *gin.Context) {
 
 			} else {
 
-				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"library is closed on": day.Day})
+				logs.Error("library is closed on:", day.Day)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"library is closed on:": day.Day})
 				return
 
 			}
@@ -86,8 +88,8 @@ func UserBooksTaken(c *gin.Context) {
 	defer cancel()
 
 	if err:= c.BindJSON(&userbook); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
-		log.Fatal(err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		logs.Error(err.Error())
 		return
 	}
 	
@@ -98,6 +100,7 @@ func UserBooksTaken(c *gin.Context) {
 		fmt.Printf("uId: %v\n", uId)
 
 		if !err1 {
+			logs.Error(err1)
 			c.JSON(http.StatusNotFound, gin.H{"message": err1})
 			return
 		}
@@ -117,6 +120,7 @@ func UserBooksTaken(c *gin.Context) {
 
 
 		if err != nil {
+			logs.Error(err1)
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "user not logged in"})
 			return
 		}
@@ -127,7 +131,8 @@ func UserBooksTaken(c *gin.Context) {
 			
 
 			if count_title == 0 {
-				
+
+					logs.Error("could not find title in books")				
 					c.JSON(http.StatusNotFound, gin.H{"message": "could not find title in books"})
 					return
 				
@@ -140,6 +145,7 @@ func UserBooksTaken(c *gin.Context) {
 				err := bookCollection.FindOne(ctx, bson.M{"Title": userbook.Title}).Decode(&result)
 
 				if err != nil {
+					logs.Error(err.Error())
 					c.JSON(http.StatusNotFound, gin.H{"message": "could not find title in books"})
 					return
 				}
@@ -172,6 +178,7 @@ func UserBooksTaken(c *gin.Context) {
 				_, err := bookCollection.UpdateOne(ctx, bson.M{"Title": result.Title},update)
 
 				if err != nil {
+					logs.Error(err.Error())
 					c.JSON(http.StatusNotFound, gin.H{"message": "could not update book" })
 					return
 				}
@@ -202,6 +209,7 @@ func UserBooksTaken(c *gin.Context) {
 				newbook, err:= userCollection.UpdateOne(ctx, match, change)
 
 				if err !=  nil {
+					logs.Error(err.Error())
 					c.JSON(http.StatusNotFound, gin.H{"message": "could not update bookstaken" })
 					return
 				}
@@ -210,6 +218,7 @@ func UserBooksTaken(c *gin.Context) {
 				return
 			
 				} else {
+					logs.Error("not enough book qty")
 					c.JSON(http.StatusNotFound, gin.H{"message": "not enough book qty" })
 					return
 				}
@@ -223,8 +232,11 @@ func UserBooksTaken(c *gin.Context) {
 
 		}
 	}else{
+
+		logs.Error("user not logged in")
 		c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"message": "user not logged in" })
 		return
+
 	}
 
 }	

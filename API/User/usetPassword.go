@@ -5,7 +5,7 @@ import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	"net/http"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -31,6 +31,7 @@ func SetNewPasswordUser(c *gin.Context){
 
 	if err:= c.BindJSON(&userpwd); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		logs.Error(err.Error())
 		return
 	}
 
@@ -40,11 +41,13 @@ func SetNewPasswordUser(c *gin.Context){
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		logs.Error(err.Error())
 		return
 	}
 
 	if user.Password != userpwd.OldPassword {
 		c.AbortWithStatusJSON(http.StatusNotAcceptable,gin.H{"error":"old password is incorrect"})
+		logs.Error("old password is incorrect")
 		return
 	}
 
@@ -57,6 +60,7 @@ func SetNewPasswordUser(c *gin.Context){
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		logs.Error(err.Error())
 		return
 	}
 
@@ -64,6 +68,7 @@ func SetNewPasswordUser(c *gin.Context){
 
 	if result.ModifiedCount < 1 {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
+		logs.Error(err.Error())
 		return
 	}
 

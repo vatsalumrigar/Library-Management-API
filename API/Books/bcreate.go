@@ -4,11 +4,11 @@ import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	validation "PR_2/validation"
-	"log"
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary create book in book collection 
@@ -32,8 +32,8 @@ func CreateBook(c *gin.Context) {
 	defer cancel()
 
 	if err := c.BindJSON(&book); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
-		log.Fatal(err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		logs.Error(err.Error())
 		return
 	} 
 	
@@ -41,8 +41,9 @@ func CreateBook(c *gin.Context) {
 	//fmt.Printf("%d : %s, ", i,  author.Author_Email)
 	err := validation.ValidateBmodel(ctx, author.Author_Email, book.Publisher.Publisher_Email, book.Publisher.PublishedOn )
 
-	if err != nil {
+		if err != nil {
 
+			logs.Error(err.Error())
 			c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": err.Error() })
 			return
 	
@@ -64,7 +65,8 @@ func CreateBook(c *gin.Context) {
 
 		get1 := bookCollection.FindOne(ctx, bson.M{"Title": title}).Decode(&result)
 		if get1 != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message": get1})
+			logs.Error(get1.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message": get1.Error()})
 			return
 		}
 	
@@ -94,7 +96,8 @@ func CreateBook(c *gin.Context) {
 		err, _ := bookCollection.UpdateOne(ctx,bson.M{"Title": title},bson.M{"$set": edited})
 	
 		if err != nil {
-		
+			logs.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err})
 			return
 		}
 
@@ -119,6 +122,7 @@ func CreateBook(c *gin.Context) {
 		res1 := map[string]interface{}{"data": result1}
 
 		if err != nil {
+			logs.Error(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err})
 			return
 		}

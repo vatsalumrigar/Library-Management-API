@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary delete book from book collection 
@@ -29,11 +30,13 @@ func DeleteBook(c *gin.Context) {
 	res := map[string]interface{}{"data": result}
 
 	if err != nil {
+		logs.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
 		return
 	}
 	
 	if result.DeletedCount < 1 {
+		logs.Error("No data to delete")
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "No data to delete"})
 		return
 	}

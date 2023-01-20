@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -42,8 +42,11 @@ func UserBooksReturn(c *gin.Context) {
 	err := appsettingCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&settings)
 
 	if err != nil {
+
+		logs.Error(err.Error())
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message":err.Error()})
 		return
+
 	}
 
 	for _, day := range settings.Timing {
@@ -62,6 +65,7 @@ func UserBooksReturn(c *gin.Context) {
 
 				if !ns.After(srt) || !ns.Before(end) {
 
+					logs.Error (day.Day+"timings:"+ "from -"+day.StartTime+"to"+day.CloseTime)
 					c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{ day.Day+"timings": "from:"+day.StartTime+"-"+day.CloseTime})
 					return
 
@@ -69,7 +73,8 @@ func UserBooksReturn(c *gin.Context) {
 
 			} else {
 
-				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"library is closed on": day.Day})
+				logs.Error("library is closed on:", day.Day)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"library is closed on:": day.Day})
 				return
 
 			}
@@ -82,6 +87,7 @@ func UserBooksReturn(c *gin.Context) {
 	defer cancel()
 	
 	if err:= c.BindJSON(&userbook); err != nil {
+		logs.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": err})
 		return
 	}
@@ -97,6 +103,7 @@ func UserBooksReturn(c *gin.Context) {
 		uId,err3 := c.Get("uid")
 
 		if !err3 {
+			logs.Error(err3)
 			c.JSON(http.StatusNotFound, gin.H{"message": err3})
 			return
 		}
@@ -111,11 +118,13 @@ func UserBooksReturn(c *gin.Context) {
 		err2 := bookCollection.FindOne(ctx, bson.M{"Title": userbook.Title}).Decode(&result2)
 		
 		if err1 != nil {
+			logs.Error(err1.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "could not find user_id in user or user not logged in"})
 			return
 		}
 
 		if err2 != nil {
+			logs.Error(err2.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "could not find title in books"})
 			return
 		}
@@ -123,6 +132,7 @@ func UserBooksReturn(c *gin.Context) {
 		bookstaken := result1.BooksTaken
 
 		if len(bookstaken) == 0 {
+			logs.Error("user currently has no books")
 			c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":"user currently has no books"})
 			return
 		}
@@ -145,6 +155,7 @@ func UserBooksReturn(c *gin.Context) {
 
 		if notfound {
 
+			logs.Error("book not available with user")
 			c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":"book not available with user"})
 			return
 			
@@ -168,6 +179,7 @@ func UserBooksReturn(c *gin.Context) {
 	
 		if err != nil {
 	
+			logs.Error(err.Error())
 			c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":"cannot update usercollection"})
 			return
 
@@ -194,8 +206,9 @@ func UserBooksReturn(c *gin.Context) {
 			_ , err := bookCollection.UpdateOne(ctx, bson.M{"Title": result2.Title}, update)
 
 			if err!= nil {
-
-				fmt.Println("cannot update usercollection")
+				
+				logs.Error("cannot update usercollection")
+			
 			}
 
 		}

@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary update book
@@ -36,8 +37,11 @@ func UpdateBook(c *gin.Context) {
 	objId, _ := primitive.ObjectIDFromHex(bookId)
 	
 	if err := c.BindJSON(&book); err != nil {
+
+		logs.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
 		return
+
 	}
 	
 	for _ , author := range book.Author {
@@ -46,6 +50,7 @@ func UpdateBook(c *gin.Context) {
 	
 		if val != nil {
 	
+				logs.Error(val.Error())
 				c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": val.Error() })
 				return
 		
@@ -75,11 +80,13 @@ func UpdateBook(c *gin.Context) {
 	res := map[string]interface{}{"data": result}
 
 	if err != nil {
+		logs.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
 		return
 		}
 
 	if result.MatchedCount < 1 {
+		logs.Error("Data doesn't exist")
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
 		return
 	}

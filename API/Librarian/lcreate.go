@@ -4,7 +4,7 @@ import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	"net/http"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -28,17 +28,10 @@ func CreateLibrarian(c *gin.Context){
 	defer cancel()
 
 	if err := c.BindJSON(&librarian); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		logs.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	
-	/*err1 := validation.ValidateUmodel(ctx, librarian.Email, librarian.Username, librarian.MobileNo, librarian.Dob, librarian.Status)
-
-	if err1 != nil {
-		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": err1.Error() })
-		return
-	} */
-
 
 	addedLibrarian := model.User {
 			
@@ -61,6 +54,7 @@ func CreateLibrarian(c *gin.Context){
 	res := map[string]interface{}{"data": result}
 
 	if err != nil {
+		logs.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error() })
 		return
 	}

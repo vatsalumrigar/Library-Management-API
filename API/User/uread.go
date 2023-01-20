@@ -4,6 +4,7 @@ import (
 	middleware "PR_2/Middleware"
 	database "PR_2/databases"
 	model "PR_2/model"
+	logs "github.com/sirupsen/logrus"
 	"fmt"
 	"net/http"
 	"github.com/gin-gonic/gin"
@@ -33,6 +34,7 @@ func ReadOneUser(c *gin.Context)  {
 		uId,err1 := c.Get("uid")
 
 		if !err1 {
+			logs.Error(err1)
 			c.JSON(http.StatusNotFound, gin.H{"message": err1})
 			return
 		}
@@ -44,11 +46,10 @@ func ReadOneUser(c *gin.Context)  {
 		objId, _ := primitive.ObjectIDFromHex(userId)
 
 		err := userCollection.FindOne(ctx, bson.M{"_Id": objId}).Decode(&result)
-		
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err})
-			fmt.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			logs.Error(err.Error())
 			return
 		}
 		//res := map[string]interface{}{"data":result}

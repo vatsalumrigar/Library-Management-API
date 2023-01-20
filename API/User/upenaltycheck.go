@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -33,7 +33,8 @@ func UserPenaltyCheck(c *gin.Context) {
 	defer cancel()
 	
 	if err:= c.BindJSON(&penalty_user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		logs.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -49,7 +50,8 @@ func UserPenaltyCheck(c *gin.Context) {
 		err1 := userCollection.FindOne(ctx, bson.M{"_Id": objId}).Decode(&users)
 
 		if err1 != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err1})
+			logs.Error(err1.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err1.Error()})
 			return
 		}
 
@@ -62,7 +64,8 @@ func UserPenaltyCheck(c *gin.Context) {
 			err2 := bookCollection.FindOne(ctx,bson.M{"Title": booktaken.Title}).Decode(&book)
 
 			if err2 != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"message": err2})
+				logs.Error(err2.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err2.Error()})
 				return
 			}
 
@@ -82,7 +85,8 @@ func UserPenaltyCheck(c *gin.Context) {
 			fmt.Println(daydiff)
 			
 			if daydiff == 0{
-				c.JSON(http.StatusAccepted, gin.H{"message": "no pending penalty"})
+				logs.Info("no pending penalty of user")
+				c.JSON(http.StatusAccepted, gin.H{"message": "no pending penalty of user"})
 				return
 			}
 
@@ -117,6 +121,7 @@ func UserPenaltyCheck(c *gin.Context) {
 
 				if err != nil {
 					
+					logs.Error(err.Error())
 					c.JSON(http.StatusInternalServerError, gin.H{"message": "could not updated user penalty"})
 					return
 

@@ -4,7 +4,7 @@ import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	"net/http"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -32,7 +32,8 @@ func ReadOneBook(c *gin.Context) {
 	res := map[string]interface{}{"data":result}
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+		logs.Error(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 

@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary check penalty of user
@@ -38,6 +39,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 	if err:= c.BindJSON(&payload); err != nil {
 
+		logs.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": err})
 		return
 
@@ -48,6 +50,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		lId,err := c.Get("uid")
 
 		if !err {
+			logs.Error(err)
 			c.JSON(http.StatusNotFound, gin.H{"message": err})
 			return
 		}
@@ -60,11 +63,13 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		err1 := userCollection.FindOne(ctx, bson.M{"_Id": objId1}).Decode(&lib)
 		
 		if err1 != nil {
+			logs.Error(err1.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err1})
 			return
 		}
 
 		if lib.UserType != "Librarian"{
+			logs.Error("enter valid librairian token")
 			c.JSON(http.StatusForbidden, gin.H{"message": "enter valid librairian token"})
 			return
 		}
@@ -76,6 +81,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		err2 := userCollection.FindOne(ctx, bson.M{"_Id": objId2}).Decode(&user)
 		
 		if err2 != nil {
+			logs.Error("cannot find user")
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "cannot find user"})
 			return
 		}
@@ -86,6 +92,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 			if (book.Reason != 1) && (book.Reason != 2) && (book.Reason != 3) {
 
+				logs.Error("reason should be either 1, 2 or 3")
 				c.AbortWithStatusJSON(http.StatusNotAcceptable,gin.H{"error":"reason should be either 1, 2 or 3"})
 				return
 
@@ -100,6 +107,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 			}
 
 			if !bookfound {
+				logs.Error("user has no book called", book.BookTitle)
 				c.AbortWithStatusJSON(http.StatusForbidden,gin.H{"user has no book called" : book.BookTitle})
 				return
 			}
@@ -109,6 +117,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		count_user, _ := accountingCollection.CountDocuments(ctx, bson.M{"UserId": payload.UserId})
 		
 		if len(user.BooksTaken) == 0{
+			logs.Error("user has no books")
 			c.AbortWithStatusJSON(http.StatusNotFound,gin.H{"message": "user has no books"})
 			return	
 		}
@@ -136,6 +145,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 					err3 := bookCollection.FindOne(ctx, bson.M{"Title": pbooktitle}).Decode(&books)
 		
 					if err3 != nil {
+						logs.Error("cannot find book")
 						c.JSON(http.StatusInternalServerError, gin.H{"message": "cannot find book"})
 						return
 					}
@@ -249,6 +259,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 					if err != nil {
 						
+						logs.Error(err.Error())
 						c.JSON(http.StatusInternalServerError, gin.H{"message": "could not update user status or timepenaltycalc"})
 						return
 	
@@ -264,6 +275,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 				err6 := bookCollection.FindOne(ctx, bson.M{"Title": ubooktitle}).Decode(&absentbook)
 		
 				if err6 != nil {
+					logs.Error(err6.Error())
 					c.JSON(http.StatusInternalServerError, gin.H{"message": "cannot find absentbook"})
 					return
 				}
@@ -330,6 +342,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 				if err != nil {
 					
+					logs.Error(err.Error())
 					c.JSON(http.StatusInternalServerError, gin.H{"message": "could not update user status or timepenaltycalc"})
 					return
 
@@ -357,6 +370,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		_, err4 := userCollection.UpdateOne(ctx,match,update)
 
 		if err4 != nil {
+			logs.Error(err4.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "could not update user total penalty"})
 			return
 
@@ -380,7 +394,8 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		//res := map[string]interface{}{"data": result}
 	
 		if err5 != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message":err5 })
+			logs.Error(err5.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message":err5.Error() })
 			return
 		}
 
@@ -396,6 +411,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 			_, err6 := accountingCollection.UpdateOne(ctx,match1,update1)
 
 			if err6 != nil {
+				logs.Error(err6.Error())
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "could not push books in pdetails"})
 				return
 

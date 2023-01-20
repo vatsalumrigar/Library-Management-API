@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	logs "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -40,7 +41,9 @@ func ReadAllLibrarian(c *gin.Context) {
 		err := cursor.Decode(&resl)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message":err})
+			logs.Error(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error()})
+			return
 		}
 
 		result = append(result, resl)

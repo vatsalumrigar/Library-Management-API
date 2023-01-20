@@ -3,11 +3,11 @@ package librarians
 import (
 	database "PR_2/databases"
 	model "PR_2/model"
-	"fmt"
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary read one librarian
@@ -34,8 +34,8 @@ func ReadOneLibrarian(c *gin.Context)  {
 	
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
-		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		logs.Error(err.Error())
 		return
 	}
 	//res := map[string]interface{}{"data":result}

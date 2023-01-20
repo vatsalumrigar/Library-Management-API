@@ -5,7 +5,7 @@ import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	"net/http"
-
+	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -42,11 +42,13 @@ func CreateSetting(c *gin.Context){
 		err := userCollection.FindOne(ctx, bson.M{"_Id": objId}).Decode(&admin)
 
 		if err != nil {
+			logs.Error(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "user not logged in"})
 			return
 		}
 
 		if admin.UserType != "Admin" {
+			logs.Error("enter valid admin token")
 			c.AbortWithStatusJSON(http.StatusForbidden,gin.H{"error": "enter valid admin token"})
 			return
 		}
@@ -54,6 +56,7 @@ func CreateSetting(c *gin.Context){
 		setting := new(model.Timings)
 
 		if err := c.BindJSON(&setting); err != nil {
+			logs.Error(err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
@@ -69,6 +72,7 @@ func CreateSetting(c *gin.Context){
 		res := map[string]interface{}{"data": result}
 	
 		if err != nil {
+			logs.Error(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error() })
 			return
 		}

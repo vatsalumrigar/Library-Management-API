@@ -1299,16 +1299,16 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "logout user",
-                "operationId": "user-logout",
+                "summary": "login user",
+                "operationId": "user-login",
                 "parameters": [
                     {
-                        "description": "Payload for logout API",
+                        "description": "Payload for login API",
                         "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Logout"
+                            "$ref": "#/definitions/model.Login"
                         }
                     }
                 ],
@@ -1686,17 +1686,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.Logout": {
-            "type": "object",
-            "required": [
-                "email"
-            ],
-            "properties": {
-                "email": {
                     "type": "string"
                 }
             }

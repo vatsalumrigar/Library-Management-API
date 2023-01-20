@@ -2,7 +2,6 @@ package helper
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -12,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
+    logs "github.com/sirupsen/logrus"
 )
 
 // SignedDetails
@@ -53,7 +53,7 @@ func GenerateAllTokens(email string, firstName string, lastName string, uid stri
     refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
 
     if err != nil {
-        log.Panic(err)
+        logs.Error(err)
         return
     }
 
@@ -74,13 +74,14 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
     )
     if err != nil {
         msg = err.Error()
+        logs.Error(msg)
         return
     }
 
     claims, ok := token.Claims.(*SignedDetails)
     if !ok {
         msg = "the token is invalid"
-		fmt.Println(msg)
+        logs.Error(msg)
         msg = err.Error()
         return
     }
@@ -88,7 +89,7 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
 
     if claims.ExpiresAt < time.Now().Local().Unix() {
         msg = "token is expired"
-		fmt.Println(msg)
+        logs.Error(msg)
         msg = err.Error()
         return
     }
@@ -130,7 +131,7 @@ func UpdateAllTokens(signedToken string, signedRefreshToken string, userId strin
     defer cancel()
 
     if err != nil {
-        log.Panic(err)
+        logs.Error(err)
         return
     }
 

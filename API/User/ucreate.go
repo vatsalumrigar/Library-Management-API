@@ -6,10 +6,11 @@ import (
 	model "PR_2/model"
 	"time"
 	"fmt"
-	"log"
+
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 
@@ -31,13 +32,14 @@ func CreateUser(c *gin.Context) {
 
 	if err:= c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err})
-		log.Fatal(err)
+		logs.Error(err.Error())
 		return
 	}
 	
 	err1 := validation.ValidateUmodel(ctx, user.Email, user.Username, user.MobileNo, user.Dob, user.Status)
 
 	if err1 != nil {
+		logs.Error(err1.Error())
 		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": err1.Error() })
 		return
 	} 
@@ -47,8 +49,9 @@ func CreateUser(c *gin.Context) {
 	dateToUnix, err := time.Parse(layout, date) 
 
 	if err != nil {
-		fmt.Println(err)
+		logs.Error(err.Error())
 	}
+
 	fmt.Println(dateToUnix)
 	fmt.Println(dateToUnix.Unix())
 
@@ -73,9 +76,8 @@ func CreateUser(c *gin.Context) {
 	result, err := userCollection.InsertOne(ctx, addedUser)
 	res := map[string]interface{}{"data": result}
 
-	
-
 	if err != nil {
+		logs.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error() })
 		return
 	}

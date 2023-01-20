@@ -3,9 +3,9 @@ package admin
 import (
 	database "PR_2/databases"
 	model "PR_2/model"
-	"fmt"
 	"net/http"
 	"github.com/gin-gonic/gin"
+	logs "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -14,7 +14,7 @@ import (
 // @ID read-admin
 // @Produce json
 // @Success 201 {object} model.User
-// @Param adminId path string true "AdminID" 
+// @Param adminId path string true "AdminID"
 // @Failure 400 {object} error
 // @Failure 500 {object} error
 // @Router /getOneAdmin/{adminId} [get]
@@ -35,8 +35,8 @@ func ReadOneAdmin(c *gin.Context)  {
 	
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
-		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		logs.Error(err.Error())
 		return
 	}
 	//res := map[string]interface{}{"data":result}

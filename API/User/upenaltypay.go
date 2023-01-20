@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary pay penalty of user
@@ -27,7 +28,8 @@ func UserPenaltyPay(c *gin.Context) {
 	defer cancel()
 	
 	if err:= c.BindJSON(&penalty_payer); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		logs.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -39,7 +41,8 @@ func UserPenaltyPay(c *gin.Context) {
 	err1 := userCollection.FindOne(ctx, bson.M{"Username": penalty_payer.Username}).Decode(&user)
 
 	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err1})
+		logs.Error(err1.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err1.Error()})
 		return
 	}
 
@@ -60,8 +63,9 @@ func UserPenaltyPay(c *gin.Context) {
 
 
 			if err != nil {
-						
-				c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+					
+				logs.Error(err.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 				return
 
 			}
@@ -71,6 +75,7 @@ func UserPenaltyPay(c *gin.Context) {
 
 	} else {
 
+		logs.Error("amount pay should be equal to total penalty:", user.Total_Penalty)
 		c.JSON(http.StatusInternalServerError, gin.H{"amount pay should be equal to total penalty": user.Total_Penalty})
 		return
 

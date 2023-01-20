@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary create admin
@@ -28,25 +29,10 @@ func CreateAdmin(c *gin.Context){
 	defer cancel()
 
 	if err := c.BindJSON(&admin); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		logs.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-
-	/* err1 := validation.ValidateUmodel(ctx, admin.Email, admin.Username, admin.MobileNo, admin.Dob, admin.Status)
-
-	if err1 != nil {
-		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": err1.Error() })
-		return
-	} */
-
-	/*addaddress := model.AdminAddress{
-		Street: address.Street,
-		City: address.City,
-		State: address.State,
-		Pincode: address.Pincode,
-		Country: address.Country,
-
-	}*/
 
 	addedAdmin := model.Admin {
 			
@@ -69,6 +55,7 @@ func CreateAdmin(c *gin.Context){
 	res := map[string]interface{}{"data": result}
 
 	if err != nil {
+		logs.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error() })
 		return
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	logs "github.com/sirupsen/logrus"
 )
 
 // @Summary show books taken by user
@@ -48,9 +49,10 @@ func UserParam(c *gin.Context) {
 
 	if err != nil {
 
-		fmt.Println(err)
+		logs.Error(err.Error())
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": err})
 		return
+		
 	}
 
 	for cursor.Next(ctx){	
@@ -60,6 +62,7 @@ func UserParam(c *gin.Context) {
 		err := cursor.Decode(&founduser)
 
 		if err!= nil {
+			logs.Error(err.Error())
 			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": err})
 			return
 		}
@@ -72,6 +75,7 @@ func UserParam(c *gin.Context) {
 			err := bookCollection.FindOne(ctx, bson.M{"Title": book.Title}).Decode(&books)
 			
 			if err!= nil {
+				logs.Error(err.Error())
 				c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": err})
 				return
 			} 
