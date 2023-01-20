@@ -29,6 +29,9 @@ func Router() {
 	router.DELETE("/deleteBook/:bookId", book.DeleteBook)
 	router.GET("getIssuedBook/",book.IssuedBook)
 	router.GET("getHistoryBook/",book.HistoryBook)
+	router.GET("getQuantityBook/",book.QuantityBook)
+	router.PATCH("operationBook/",book.OperationBook)
+
 
 	router.POST("User/", user.CreateUser)
 	router.GET("getOneUser/", user.ReadOneUser) 

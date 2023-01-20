@@ -69,3 +69,8 @@ type HistoryPayload struct {
 	BookTitle string `json:"booktitle" bson:"BookTitle"`
 
 }
+
+type Bookqty struct {
+	Books map[string]interface{}  `json:"books" bson:"Books" binding:"required"`
+	Operations string `json:"operations" bson:"Operations" binding:"required"`
+}

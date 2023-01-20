@@ -48,7 +48,6 @@ type Bookdetails struct {
 
 }
 
-
 type UserBook struct {
 
 	// User_Id string `json:"user_id" bson:"User_Id" binding:"required"`

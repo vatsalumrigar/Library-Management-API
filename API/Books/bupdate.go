@@ -29,8 +29,6 @@ func UpdateBook(c *gin.Context) {
 	
 	bookId := c.Param("bookId")
 	var book model.Books
-	
-	
 
 	defer cancel()
 	
@@ -70,8 +68,6 @@ func UpdateBook(c *gin.Context) {
 		
 	}
 	
-	
-
 	//edited := bson.M{"title": post.Title, "article": post.Article}
 
 
