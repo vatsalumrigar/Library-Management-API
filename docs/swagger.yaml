@@ -1110,6 +1110,69 @@ paths:
           description: Internal Server Error
           schema: {}
       summary: read one user from user collection
+  /getQuantityBook/:
+    get:
+      operationId: quantity-book
+      parameters:
+      - description: LibrarianID
+        in: header
+        name: librarianId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "406":
+          description: Not Acceptable
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get book title and their quantities from book collection
+  /operationBook/:
+    patch:
+      consumes:
+      - application/json
+      operationId: operation-book
+      parameters:
+      - description: LibrarianID
+        in: header
+        name: librarianId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "406":
+          description: Not Acceptable
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: update book quantites according to operation in book collection
   /updateAdmin/{adminId}:
     put:
       consumes:

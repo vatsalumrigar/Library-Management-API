@@ -4,15 +4,24 @@ import (
 	middleware "PR_2/Middleware"
 	database "PR_2/databases"
 	model "PR_2/model"
-	"fmt"
 	"net/http"
-
+	"strconv"
 	"github.com/gin-gonic/gin"
 	logs "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// @Summary update book quantites according to operation in book collection
+// @ID operation-book
+// @Accept json
+// @Produce json
+// @Param librarianId header string true "LibrarianID"
+// @Success 201 {object} string
+// @Failure 404 {string} string 
+// @Failure 406 {string} string 
+// @Failure 500 {string} string 
+// @Router /operationBook/ [patch]
 func OperationBook(c *gin.Context) {
 
 	userCollection := database.GetCollection("User")
@@ -46,7 +55,7 @@ func OperationBook(c *gin.Context) {
 
 		if lib.UserType != "Librarian"{
 			logs.Error("enter valid librairian token")
-			c.JSON(http.StatusForbidden, gin.H{"message": "enter valid librairian token"})
+			c.JSON(http.StatusNotAcceptable, gin.H{"message": "enter valid librairian token"})
 			return
 		}
 	
@@ -69,27 +78,98 @@ func OperationBook(c *gin.Context) {
 
 	}
 
-	if books.Operations != "Add" && books.Operations != "Remove" {
+	if books.Operations != "Add" && books.Operations != "Subtract" {
 
-		c.AbortWithStatusJSON(http.StatusNotAcceptable,gin.H{"message":"book opertions should either be: Add or Remove"})
+		c.AbortWithStatusJSON(http.StatusNotAcceptable,gin.H{"message":"book opertions should either be: Add or Subtract"})
 		return
 
 	}
 
 	for title , qty := range books.Books{
 
-		fmt.Printf("title: %v\n", title)
-		fmt.Printf("book: %v\n", qty)
+		// fmt.Printf("title: %v\n", title)
+		// fmt.Printf("qty: %v\n", qty)
 
-		titleCount, _ := bookCollection.CountDocuments(ctx, bson.M{"Title": title})
+		operationQty := qty.(string)
+ 		operationQuantity, _ := strconv.Atoi(operationQty)
 
-		if titleCount < 1 {
-			logs.Error(title,"-no such book")
-			c.AbortWithStatusJSON(http.StatusNotFound,gin.H{"error": title+"-no such book"})
+
+		var foundBook model.Books
+
+		match := bson.M{"Title": title}
+		update := bson.M{}
+
+		err := bookCollection.FindOne(ctx, match).Decode(&foundBook)
+	
+		if err != nil {
+			logs.Error(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
 		}
+
+		if books.Operations == "Add" {
+
+			update = bson.M{
+					
+				"$set": bson.M{
+				"Status": "Available",
+				"Quantities": foundBook.Quantities + operationQuantity ,
+
+				},
+	
+			}
+
+		}
+
+		if books.Operations == "Subtract" {
+
+			if foundBook.Quantities - operationQuantity == 0 {
+
+				update = bson.M{
+					
+					"$set": bson.M{
+					"Status": "Unavailable",
+					"Quantities": 0 ,
+	
+					},
+		
+				}
+
+			}
+
+			if foundBook.Quantities - operationQuantity < 0 {
+
+				logs.Error("books quantity cannot be less then zero for book:", title)
+				c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"error":"books quantity cannot be less then zero for book:"+title})
+				return
+
+			}
+
+			update = bson.M{
+					
+				"$set": bson.M{
+
+				"Quantities": foundBook.Quantities - operationQuantity ,
+
+				},
+	
+			}
+
+		}
+			
+		_, err = bookCollection.UpdateOne(ctx,match,update)
+
+
+			if err != nil {
+					
+				logs.Error(err.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+				return
+
+			}
 	
 	}
 
+	c.JSON(http.StatusCreated,gin.H{"message":"books updated succesfully!"})
 
 }

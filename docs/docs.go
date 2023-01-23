@@ -1107,6 +1107,101 @@ const docTemplate = `{
                 }
             }
         },
+        "/getQuantityBook/": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "get book title and their quantities from book collection",
+                "operationId": "quantity-book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "LibrarianID",
+                        "name": "librarianId",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "406": {
+                        "description": "Not Acceptable",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/operationBook/": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "update book quantites according to operation in book collection",
+                "operationId": "operation-book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "LibrarianID",
+                        "name": "librarianId",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "406": {
+                        "description": "Not Acceptable",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/updateAdmin/{adminId}": {
             "put": {
                 "consumes": [

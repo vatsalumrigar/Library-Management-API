@@ -150,52 +150,6 @@ func AccountingPenaltyCheck(c *gin.Context) {
 						return
 					}
 
-					// if reason == 1 {
-
-					// 	reasontype := "Late Penalty"
-
-					// 	timenow := time.Now().Unix()
-					// 	timebooktaken := ubook.TimePenaltyCalc
-
-					// 	tn := time.Unix(timenow,0)
-					// 	tbt := time.Unix(timebooktaken,0)
-
-					// 	diff := tn.Sub(tbt)
-					// 	daydiff := int(diff.Hours()/24)
-
-					// 	if daydiff == 0 {
-
-					// 		penalty = 0
-
-					// 	}
-
-					// 	penaltycheckdays := 15
-
-					// 	if ubook.TimePenaltyCalc != ubook.TimeTaken {
-
-					// 		penaltycheckdays = 0
-
-					// 	}
-
-					// 	if daydiff > penaltycheckdays {
-
-					// 		penalty = books.Penalty * (daydiff-penaltycheckdays)
-
-					// 		penaltydetails := model.Pdetails{
-					// 			LibrarianId: objId1.Hex(),     
-					// 			BookTitle: ubook.Title,      
-					// 			TimePenaltyCheck: time.Now().Unix(), 
-					// 			PenaltyPay: false ,       
-					// 			PenaltyAmount: penalty,    
-					// 			Reason: reasontype,          
-					// 			ReasonType: 1 ,       
-					// 		}
-
-					// 		fmt.Printf("penalty.1: %v\n", penalty)
-					// 		pdetails = append(pdetails, penaltydetails)
-
-					// 	}
-					// }
 					if reason == 1 {
 
 					goto R1
@@ -405,7 +359,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 			fmt.Printf("pdetails: %v\n", pdetails)
 			match1 := bson.M{"UserId" : payload.UserId}
-			//update1 := bson.M{"$push": bson.M{"PenaltyDetails": pdetails}}
+			// update1 := bson.M{"$push": bson.M{"PenaltyDetails": pdetails}}
 			update1 := bson.M{"$addToSet": bson.M{"PenaltyDetails":	bson.M{"$each": pdetails}}}
 
 			_, err6 := accountingCollection.UpdateOne(ctx,match1,update1)

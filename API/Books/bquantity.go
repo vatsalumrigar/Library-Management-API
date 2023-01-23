@@ -12,6 +12,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// @Summary get book title and their quantities from book collection
+// @ID quantity-book
+// @Produce json
+// @Param librarianId header string true "LibrarianID"
+// @Success 200 {object} []map[string]interface{}
+// @Failure 403 {string} string 
+// @Failure 406 {string} string 
+// @Failure 500 {string} string 
+// @Router /getQuantityBook/ [get]
 func QuantityBook(c *gin.Context){
 
 	userCollection := database.GetCollection("User")
