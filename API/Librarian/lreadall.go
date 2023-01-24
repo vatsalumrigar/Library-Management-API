@@ -4,7 +4,7 @@ import (
 	database "PR_2/databases"
 	model "PR_2/model"
 	"net/http"
-
+	localization "PR_2/localise"
 	"github.com/gin-gonic/gin"
 	logs "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,10 +14,13 @@ import (
 // @Summary read all librarian
 // @ID read-all-librarian
 // @Produce json
+// @Param language header string true "languageToken"
 // @Success 200 {object} model.User
 // @Failure 500 {object} error
 // @Router /getAllLibrarian/ [get]
 func ReadAllLibrarian(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	librarianCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -42,7 +45,7 @@ func ReadAllLibrarian(c *gin.Context) {
 
 		if err != nil {
 			logs.Error(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 

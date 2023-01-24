@@ -388,6 +388,11 @@ paths:
         name: librarianId
         required: true
         type: string
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: Query Payload for Penalty Check API
         in: body
         name: payload
@@ -428,6 +433,11 @@ paths:
         name: librarianId
         required: true
         type: string
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: Query Payload for Penalty Pay API
         in: body
         name: payload
@@ -463,6 +473,11 @@ paths:
       - application/json
       operationId: create-admin
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: Query Payload for create Admin API
         in: body
         name: payload
@@ -495,6 +510,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.Books'
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -521,6 +541,11 @@ paths:
       - description: AdminID
         in: header
         name: adminId
+        required: true
+        type: string
+      - description: languageToken
+        in: header
+        name: language
         required: true
         type: string
       - description: Query Payload for create App Timings API
@@ -552,6 +577,11 @@ paths:
       - application/json
       operationId: create-librarian
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: Payload for create Librarian API
         in: body
         name: payload
@@ -584,6 +614,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.PenaltyPay'
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -610,6 +645,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.PenaltyUsers'
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -633,6 +673,11 @@ paths:
       - description: AdminID
         in: header
         name: adminId
+        required: true
+        type: string
+      - description: languageToken
+        in: header
+        name: language
         required: true
         type: string
       - description: Query Payload for update App Timings API
@@ -670,6 +715,11 @@ paths:
       - application/json
       operationId: create-user
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: Payload for create User API
         in: body
         name: payload
@@ -693,6 +743,11 @@ paths:
       - application/json
       operationId: user-book-return
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: UserID
         in: header
         name: uId
@@ -727,6 +782,11 @@ paths:
       - application/json
       operationId: user-book-take
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: UserID
         in: header
         name: uId
@@ -764,6 +824,11 @@ paths:
         name: user_id
         required: true
         type: string
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -787,6 +852,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SetNewPassword'
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -808,6 +878,11 @@ paths:
     delete:
       operationId: delete-admin
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: AdminID
         in: path
         name: adminId
@@ -833,6 +908,11 @@ paths:
         name: bookId
         required: true
         type: string
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -848,6 +928,11 @@ paths:
     delete:
       operationId: delete-librarian
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: LibrarianID
         in: path
         name: librarianId
@@ -873,6 +958,11 @@ paths:
         name: uId
         required: true
         type: string
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -893,6 +983,11 @@ paths:
       - application/json
       operationId: read-books
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: Book Title
         in: query
         name: queryWord
@@ -919,6 +1014,12 @@ paths:
   /getAllLibrarian/:
     get:
       operationId: read-all-librarian
+      parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -941,6 +1042,11 @@ paths:
       - description: Firstname
         in: query
         name: queryWord2
+        type: string
+      - description: languageToken
+        in: header
+        name: language
+        required: true
         type: string
       produces:
       - application/json
@@ -972,6 +1078,11 @@ paths:
       - description: UserID
         in: header
         name: uId
+        required: true
+        type: string
+      - description: languageToken
+        in: header
+        name: language
         required: true
         type: string
       - description: Query Payload for Book History API
@@ -1006,6 +1117,11 @@ paths:
         name: uId
         required: true
         type: string
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1027,6 +1143,11 @@ paths:
     get:
       operationId: read-admin
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: AdminID
         in: path
         name: adminId
@@ -1050,6 +1171,11 @@ paths:
     get:
       operationId: read-book
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: BookID
         in: path
         name: bookId
@@ -1071,6 +1197,11 @@ paths:
     get:
       operationId: read-one-librarian
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: LibrarianID
         in: path
         name: librarianId
@@ -1096,6 +1227,11 @@ paths:
         name: uId
         required: true
         type: string
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1114,6 +1250,11 @@ paths:
     get:
       operationId: quantity-book
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: LibrarianID
         in: header
         name: librarianId
@@ -1148,6 +1289,11 @@ paths:
       - application/json
       operationId: operation-book
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: LibrarianID
         in: header
         name: librarianId
@@ -1179,6 +1325,11 @@ paths:
       - application/json
       operationId: update-admin
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: AdminID
         in: path
         name: adminId
@@ -1210,6 +1361,11 @@ paths:
       - application/json
       operationId: update-book
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: BookID
         in: path
         name: bookId
@@ -1241,6 +1397,11 @@ paths:
       - application/json
       operationId: update-librarian
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: LibrarianID
         in: path
         name: librarianId
@@ -1283,6 +1444,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.User'
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1303,6 +1469,11 @@ paths:
       - application/json
       operationId: user-login
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: Payload for login API
         in: body
         name: payload
@@ -1333,6 +1504,11 @@ paths:
       - application/json
       operationId: user-signup
       parameters:
+      - description: languageToken
+        in: header
+        name: language
+        required: true
+        type: string
       - description: Payload for Signup API
         in: body
         name: payload

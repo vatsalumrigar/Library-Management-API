@@ -6,7 +6,7 @@ import (
 	model "PR_2/model"
 	"time"
 	"fmt"
-
+	localization "PR_2/localise"
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,11 +18,14 @@ import (
 // @ID create-user
 // @Accept json
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param payload body model.User true "Payload for create User API"
 // @Success 201 {object} model.User
 // @Failure 500 {object} error
 // @Router /User/ [post]
 func CreateUser(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	userCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -31,7 +34,7 @@ func CreateUser(c *gin.Context) {
 	defer cancel()
 
 	if err:= c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		logs.Error(err.Error())
 		return
 	}
@@ -40,7 +43,7 @@ func CreateUser(c *gin.Context) {
 
 	if err1 != nil {
 		logs.Error(err1.Error())
-		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": err1.Error() })
+		c.AbortWithStatusJSON(http.StatusConflict, localization.GetMessage(languageToken,"409"))
 		return
 	} 
 	
@@ -78,11 +81,11 @@ func CreateUser(c *gin.Context) {
 
 	if err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error() })
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Posted successfully", "Data": res})
+	c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"CreateUser.201"), "Data": res})
 
 }
 

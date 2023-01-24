@@ -7,6 +7,7 @@ import (
 	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	localization "PR_2/localise"
 )
 
 // @Summary read all user from user collection
@@ -14,10 +15,13 @@ import (
 // @Produce json
 // @Param queryWord1 query string false "UserType"
 // @Param queryWord2 query string false "Firstname"
+// @Param language header string true "languageToken"
 // @Success 200 {object} model.User
 // @Failure 500 {object} error
 // @Router /getAllUser/ [get]
 func ReadAllUser(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	userCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -52,7 +56,7 @@ func ReadAllUser(c *gin.Context) {
 
 		if err != nil {
 			logs.Error(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message":err})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		}
 
 		result = append(result, resl)

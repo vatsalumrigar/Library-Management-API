@@ -9,17 +9,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 )
 
 // @Summary show books taken by user
 // @ID user-param
 // @Produce json
 // @Param user_id path string true "UserID"
+// @Param language header string true "languageToken"
 // @Success 200 {object} model.ParamUser
 // @Failure 404 {object} error
 // @Router /UserParam/ [get]
 func UserParam(c *gin.Context) {
 
+    languageToken := c.Request.Header.Get("lan")
 
 	user_id := c.Request.URL.Query().Get("user_id")
 	fmt.Println("user_id : ", user_id)
@@ -50,7 +53,7 @@ func UserParam(c *gin.Context) {
 	if err != nil {
 
 		logs.Error(err.Error())
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": err})
+		c.AbortWithStatusJSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
 		return
 		
 	}
@@ -63,7 +66,7 @@ func UserParam(c *gin.Context) {
 
 		if err!= nil {
 			logs.Error(err.Error())
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": err})
+			c.AbortWithStatusJSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
 			return
 		}
 	
@@ -76,7 +79,7 @@ func UserParam(c *gin.Context) {
 			
 			if err!= nil {
 				logs.Error(err.Error())
-				c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": err})
+				c.AbortWithStatusJSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
 				return
 			} 
 
@@ -126,7 +129,7 @@ func UserParam(c *gin.Context) {
 
 	}
 	
-	c.JSON(http.StatusOK, gin.H{"message": "Posted successfully", "Data": userparam})	
+	c.JSON(http.StatusOK, gin.H{"message": localization.GetMessage(languageToken,"UserParam.200"), "Data": userparam})	
 
 }
 

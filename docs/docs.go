@@ -39,6 +39,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Query Payload for Penalty Check API",
                         "name": "payload",
                         "in": "body",
@@ -97,6 +104,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Query Payload for Penalty Pay API",
                         "name": "payload",
                         "in": "body",
@@ -148,6 +162,13 @@ const docTemplate = `{
                 "operationId": "create-admin",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Query Payload for create Admin API",
                         "name": "payload",
                         "in": "body",
@@ -194,6 +215,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.Books"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -233,6 +261,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "AdminID",
                         "name": "adminId",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
                         "in": "header",
                         "required": true
                     },
@@ -280,6 +315,13 @@ const docTemplate = `{
                 "operationId": "create-librarian",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Payload for create Librarian API",
                         "name": "payload",
                         "in": "body",
@@ -326,6 +368,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.PenaltyPay"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -365,6 +414,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.PenaltyUsers"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -400,6 +456,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "AdminID",
                         "name": "adminId",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
                         "in": "header",
                         "required": true
                     },
@@ -455,6 +518,13 @@ const docTemplate = `{
                 "operationId": "create-user",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Payload for create User API",
                         "name": "payload",
                         "in": "body",
@@ -489,6 +559,13 @@ const docTemplate = `{
                 "summary": "return book from user",
                 "operationId": "user-book-return",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "UserID",
@@ -539,6 +616,13 @@ const docTemplate = `{
                 "summary": "add books to user",
                 "operationId": "user-book-take",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "UserID",
@@ -592,6 +676,13 @@ const docTemplate = `{
                         "name": "user_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -627,6 +718,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.SetNewPassword"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -659,6 +757,13 @@ const docTemplate = `{
                 "summary": "delete admin",
                 "operationId": "delete-admin",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "AdminID",
@@ -695,6 +800,13 @@ const docTemplate = `{
                         "name": "bookId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -719,6 +831,13 @@ const docTemplate = `{
                 "summary": "delete librarian",
                 "operationId": "delete-librarian",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "LibrarianID",
@@ -755,6 +874,13 @@ const docTemplate = `{
                         "name": "uId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -786,6 +912,13 @@ const docTemplate = `{
                 "summary": "read books from book collection",
                 "operationId": "read-books",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Book Title",
@@ -826,6 +959,15 @@ const docTemplate = `{
                 ],
                 "summary": "read all librarian",
                 "operationId": "read-all-librarian",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -859,6 +1001,13 @@ const docTemplate = `{
                         "description": "Firstname",
                         "name": "queryWord2",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -908,6 +1057,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Query Payload for Book History API",
                         "name": "payload",
                         "in": "body",
@@ -953,6 +1109,13 @@ const docTemplate = `{
                         "name": "uId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -985,6 +1148,13 @@ const docTemplate = `{
                 "summary": "read admin",
                 "operationId": "read-admin",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "AdminID",
@@ -1021,6 +1191,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "BookID",
                         "name": "bookId",
                         "in": "path",
@@ -1051,6 +1228,13 @@ const docTemplate = `{
                 "summary": "read one librarian",
                 "operationId": "read-one-librarian",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "LibrarianID",
@@ -1087,6 +1271,13 @@ const docTemplate = `{
                         "name": "uId",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1115,6 +1306,13 @@ const docTemplate = `{
                 "summary": "get book title and their quantities from book collection",
                 "operationId": "quantity-book",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "LibrarianID",
@@ -1168,6 +1366,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "LibrarianID",
                         "name": "librarianId",
                         "in": "header",
@@ -1213,6 +1418,13 @@ const docTemplate = `{
                 "summary": "update admin",
                 "operationId": "update-admin",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "AdminID",
@@ -1261,6 +1473,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "BookID",
                         "name": "bookId",
                         "in": "path",
@@ -1305,6 +1524,13 @@ const docTemplate = `{
                 "summary": "update librarian",
                 "operationId": "update-librarian",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "LibrarianID",
@@ -1366,6 +1592,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.User"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1397,6 +1630,13 @@ const docTemplate = `{
                 "summary": "login user",
                 "operationId": "user-login",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Payload for login API",
                         "name": "payload",
@@ -1442,6 +1682,13 @@ const docTemplate = `{
                 "summary": "signup user",
                 "operationId": "user-signup",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "languageToken",
+                        "name": "language",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Payload for Signup API",
                         "name": "payload",

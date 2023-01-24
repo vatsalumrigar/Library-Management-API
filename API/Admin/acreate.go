@@ -7,18 +7,22 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 )
 
 // @Summary create admin
 // @ID create-admin
 // @Accept json
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param payload body model.Admin true "Query Payload for create Admin API"
 // @Success 201 {object} model.User
 // @Failure 400 {object} error
 // @Failure 500 {object} error
 // @Router /Admin/ [post]
 func CreateAdmin(c *gin.Context){
+
+	languageToken := c.Request.Header.Get("lan")
 
 	adminCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -30,7 +34,7 @@ func CreateAdmin(c *gin.Context){
 
 	if err := c.BindJSON(&admin); err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		return
 	}
 
@@ -56,10 +60,10 @@ func CreateAdmin(c *gin.Context){
 
 	if err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error() })
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Posted successfully", "Data": res})
+	c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"200"), "Data": res})
 
 }

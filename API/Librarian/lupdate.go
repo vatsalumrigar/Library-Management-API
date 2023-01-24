@@ -8,12 +8,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 )
 
 // @Summary update librarian
 // @ID update-librarian
 // @Accept json
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param librarianId path string true "LibrarianID" 
 // @Param payload body model.User true "Payload for update Librarian API"
 // @Success 201 {object} model.User
@@ -21,6 +23,8 @@ import (
 // @Failure 500 {object} error
 // @Router /updateLibrarian/{librarianId} [put]
 func UpdateLibrarian(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 	
 	librarianCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -35,7 +39,7 @@ func UpdateLibrarian(c *gin.Context) {
 	
 	if err := c.BindJSON(&librarian); err != nil {
 		logs.Error(err.Error())
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err})
+		c.AbortWithStatusJSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		return
 	}
 
@@ -54,13 +58,6 @@ func UpdateLibrarian(c *gin.Context) {
 		"Address": librarian.Address,
 
 	}
-	
-	/*val := validation.ValidateUmodel(ctx, admin.Email, admin.Username, admin.MobileNo, admin.Dob, admin.Status)
-
-	if val != nil {
-		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": val.Error() })
-		return
-	} */
 
 	result, err := librarianCollection.UpdateOne(ctx, bson.M{"_Id": objId}, bson.M{"$set": edited})
 
@@ -68,16 +65,16 @@ func UpdateLibrarian(c *gin.Context) {
 
 	if err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		return
 		}
 
 	if result.MatchedCount < 1 {
 		logs.Error("Data doesn't exist")
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UpdateLibrarian.500"))
 		return
 	}
 			
-	c.JSON(http.StatusCreated, gin.H{"message": "data updated successfully!", "Data": res})	
+	c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"UpdateLibrarian.201"), "Data": res})	
 }
 

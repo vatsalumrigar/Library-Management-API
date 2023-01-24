@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	localization "PR_2/localise"
 )
 
 // @Summary get book history
@@ -19,6 +20,7 @@ import (
 // @Param strOffset path string true "offset"
 // @Param strPageNumber path string true "pagenumber"
 // @Param uId header string true "UserID"
+// @Param language header string true "languageToken"
 // @Param payload body model.HistoryPayload true "Query Payload for Book History API"
 // @Success 200 {object} string
 // @Failure 400 {object} error
@@ -26,6 +28,8 @@ import (
 // @Failure 500 {object} error
 // @Router /getHistoryBook/ [get]
 func HistoryBook(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	accountingCollection := database.GetCollection("Accounting")
 	ctx, cancel := database.DbContext(10)
@@ -38,7 +42,7 @@ func HistoryBook(c *gin.Context) {
 	
 		if err := c.BindJSON(&booktitle); err != nil {
 			logs.Error(err.Error())
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 			return
 		} 
 
@@ -47,7 +51,7 @@ func HistoryBook(c *gin.Context) {
 
 		if !err {
 			logs.Error(err)
-			c.JSON(http.StatusNotFound, gin.H{"message": err})
+			c.JSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
 			return
 		}
 
@@ -75,7 +79,7 @@ func HistoryBook(c *gin.Context) {
 		err1 := accountingCollection.FindOne(ctx, bson.M{"UserId": objId.Hex()}).Decode(&user)
 		if err1 != nil {
 			logs.Error(err1.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err1.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 		
@@ -129,14 +133,14 @@ func HistoryBook(c *gin.Context) {
 
 		if err3 != nil {
 			logs.Error(err3.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err3.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 		
 		var results []model.Accounting2
 		if err3 = cursor.All(ctx, &results); err3 != nil {
 			logs.Error(err3.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err3.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 

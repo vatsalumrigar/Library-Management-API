@@ -1,0 +1,230 @@
+{
+    "200":"Status OK",
+    "201": "Status Created",
+    "400": "Status Bad Request",
+    "403": "Status Forbidden",
+    "404": "Status Not Found" ,
+    "406": "Status Not Acceptable",
+    "409": "Status Conflict",
+    "500": "Status Internal Server Error",
+
+    "SignUp": {
+        "409": {
+            "error1": "enter admin token in header",
+            "error2": "admin not logged in"
+        },
+        "500": {
+            "error1": "error occured while checking for the email",
+            "error2": "error occured while checking for the phone number",
+            "error3": "the email or phone number already exists",
+            "error4": "User item was not created"
+        }
+    },
+
+    "Login": {
+        "500": "passowrd is incorrect",
+        "409":"password expired, please create new password through setnewpassword"
+    },
+
+    "CreateSetting": {
+        "409": "enter valid admin token",
+        "500": "user not logged in"
+    },
+
+    "UpdateSetting": {
+        "409": "enter valid admin token",
+        "500": {
+            "error1": "user not logged in",
+            "error2": "Data doesn't exist"
+        }
+    },
+
+    "AccountingPenaltyCheck": {
+        "201": "Posted successfully!",
+        "403": {
+            "error1": "enter valid librairian token",
+            "error2": "user has no such book called"
+        },
+        "404": "user has no books",
+        "406": "reason should be either 1, 2 or 3",
+        "500": {
+            "error1": "cannot find user",
+            "error2": "cannot find book",
+            "error3": "could not update user status or timepenaltycalc",
+            "error4": "cannot find absentbook",
+            "errror5": "could not update user total penalty",
+            "error6": "could not push books in pdetails"  
+        }
+    },
+
+    "AccountingPenaltyPay": {
+        "201": "penalty payed successfully!",
+        "403": "enter valid librairian token",
+        "406": "user has no pending penalty",
+        "500": {
+            "error1": "could not find book",
+            "error2": "cannot update usercollection",
+            "error3": "cannot update bookcollection",
+            "error4": "amount pay should be equal to total penalty"
+        }
+    },
+
+    "CreateBook": {
+        "201":{
+            "message1":"qty updated successfully!",
+            "message2": "Posted successfully!"
+        }
+    },
+
+    "DeleteBook": {
+        "201": "Article deleted successfully!",
+        "500": "No data to delete"
+    },
+
+    "HistoryBook": {
+
+    },
+
+    "IssuedBook": {
+        "403": "enter valid librairian token"
+    },
+
+    "OperationBook": {
+        "201":"books updated succesfully!",
+        "406": {
+            "error1":"enter valid librairian token",
+            "error2": "provide librarian token in header",
+            "error3":"book opertions should either be: Add or Subtract",
+            "error4":"books quantity cannot be less then zero for book"
+    }
+    },
+
+    "QuantityBook": {
+        "403": "enter valid librairian token",
+        "406": "provide librarian token in header"
+    },
+
+    "ReadOneBook": {
+        "200": "Data Fetched!"
+    },
+
+    "ReadAllBook": {
+        
+    },
+
+    "UpdateBook": {
+        "201": "data updated successfully!",
+        "500": "Data doesn't exist"
+    },
+
+    "UserBooksReturn": {
+        "201": "booksreturn updated successfully!",
+        "500": {
+            "error1": "library is closed at current time",
+            "error2": "library is closed on this day",
+            "error3": "could not find user_id in user or user not logged in",
+            "error4": "could not find title in books",
+            "error5":"user currently has no books",
+            "error6":"book not available with user",
+            "error7":"cannot update usercollection"
+    }
+    },
+
+    "UserBooksTaken": {
+        "201": "bookstaken updated successfully!",
+        "404": {
+            "error1":"could not find title in books",
+            "error2": "could not update book",
+            "error3": "could not update bookstaken",
+            "error4": "not enough book qty",
+            "error5": "user not available"
+    },
+        "500": {
+            "error1": "library is closed at current time",
+            "error2": "library is closed on this day",
+            "error3": "user not logged in"
+    }
+    },
+
+    "CreateUser": {
+        "201": "Posted successfully!"
+    },
+
+    "DeleteUser": {
+        "201": "Article deleted successfully!",
+        "500": "No data to delete"
+    },
+
+    "UserPenaltyCheck": {
+        "202": "no pending penalty of user!",
+        "500": "could not updated user penalty"
+    },
+
+    "UserPenaltyPay": {
+        "201": "penalty payed and book returned successfully successfully!",
+        "500": "amount pay should be equal to total penalty"
+    },
+
+    "ReadOneUser": {
+        "200": "Data Fetched!"
+    },
+
+    "ReadAllUser": {
+        
+    },
+
+    "SetNewPasswordUser": {
+        "201": "data updated successfully!",
+        "406":"old password is incorrect",
+        "500": "Data doesn't exist"
+    },
+
+    "UpdateUser": {
+        "201": "data updated successfully!",
+        "500": "Data doesn't exist"
+    },
+
+    "UserParam": {
+        "200": "Posted successfully!"
+    },
+
+    "CreateAdmin": {
+        "200": "Posted successfully!"
+    },
+    
+    "DeleteAdmin": {
+        "201": "Admin deleted successfully!",
+        "500": "No data to delete" 
+    },
+    
+    "ReadOneAdmin": {
+        "200": "Data Fetched!"
+    },
+    
+    "UpdateAdmin": {
+        "201": "data updated successfully!",
+        "500": "Data doesn't exist"
+    },
+    
+    "CreateLibrarian": {
+        "201": "Posted successfully!"
+    },
+    
+    "DeleteLibrarian": {
+        "201": "Librrian deleted successfully!",
+        "500": "No data to delete"
+    },
+    
+    "ReadOneLibrarian": {
+        "200": "Data Fetched!"
+    },
+    
+    "ReadAllLibrarian": {
+        
+    },
+    
+    "UpdateLibrarian": {
+        "201": "data updated successfully!",
+        "500": "Data doesn't exist"
+    }
+}

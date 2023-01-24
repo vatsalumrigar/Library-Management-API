@@ -10,17 +10,21 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	localization "PR_2/localise"
 )
 
 // @Summary read one user from user collection
 // @ID read-one-user
 // @Produce json
 // @Param uId header string true "UserID"
+// @Param language header string true "languageToken"
 // @Success 200 {object} model.User
 // @Failure 500 {object} error
 // @Failure 404 {object} error
 // @Router /getOneUser/ [get]
 func ReadOneUser(c *gin.Context)  {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	userCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -35,7 +39,7 @@ func ReadOneUser(c *gin.Context)  {
 
 		if !err1 {
 			logs.Error(err1)
-			c.JSON(http.StatusNotFound, gin.H{"message": err1})
+			c.JSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
 			return
 		}
 
@@ -48,12 +52,12 @@ func ReadOneUser(c *gin.Context)  {
 		err := userCollection.FindOne(ctx, bson.M{"_Id": objId}).Decode(&result)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			logs.Error(err.Error())
 			return
 		}
 		//res := map[string]interface{}{"data":result}
-		c.JSON(http.StatusOK, gin.H{"message": "Data Fetched!", "Data": result})
+		c.JSON(http.StatusOK, gin.H{"message": localization.GetMessage(languageToken,"ReadOneUser.200"), "Data": result})
 
 	}
 

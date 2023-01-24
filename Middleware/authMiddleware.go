@@ -14,7 +14,6 @@ func Authentication(c *gin.Context) bool {
 
         clientToken := c.Request.Header.Get("token")
 		
-
         if clientToken == "" {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "No Authorization header provided"})
             c.Abort()

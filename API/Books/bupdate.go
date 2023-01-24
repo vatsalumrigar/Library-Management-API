@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	localization "PR_2/localise"
 	logs "github.com/sirupsen/logrus"
 )
 
@@ -15,6 +16,7 @@ import (
 // @ID update-book
 // @Accept json
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param bookId path string true "BookID"
 // @Param payload body model.Books true "Payload for update Books API"
 // @Success 201 {object} model.Books
@@ -22,6 +24,8 @@ import (
 // @Failure 500 {object} error
 // @Router /updateBook/{bookId} [put]
 func UpdateBook(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	bookCollection := database.GetCollection("Books")
 	ctx, cancel := database.DbContext(10)
@@ -37,7 +41,7 @@ func UpdateBook(c *gin.Context) {
 	if err := c.BindJSON(&book); err != nil {
 
 		logs.Error(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		return
 
 	}
@@ -49,7 +53,7 @@ func UpdateBook(c *gin.Context) {
 		if val != nil {
 	
 				logs.Error(val.Error())
-				c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": val.Error() })
+				c.AbortWithStatusJSON(http.StatusConflict, localization.GetMessage(languageToken,"409"))
 				return
 		
 			}
@@ -77,15 +81,15 @@ func UpdateBook(c *gin.Context) {
 
 	if err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		return
 		}
 
 	if result.MatchedCount < 1 {
 		logs.Error("Data doesn't exist")
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UpdateBook.500"))
 		return
 	}
 			
-	c.JSON(http.StatusCreated, gin.H{"message": "data updated successfully!", "Data": res})	
+	c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"UpdateBook.201"), "Data": res})	
 }

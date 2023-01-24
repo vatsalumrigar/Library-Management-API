@@ -5,6 +5,7 @@ import (
 	model "PR_2/model"
 	"net/http"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -13,6 +14,7 @@ import (
 // @ID read-books
 // @Accept json
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param queryWord query string false "Book Title"
 // @Param payload body model.FilterModel false "Query Payload for Read All Books API"
 // @Success 200 {object} model.Books
@@ -20,6 +22,8 @@ import (
 // @Failure 500 {object} error
 // @Router /getAllBook/ [get]
 func ReadAllBook(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	bookCollection := database.GetCollection("Books")
 	ctx, cancel := database.DbContext(10)
@@ -30,7 +34,7 @@ func ReadAllBook(c *gin.Context) {
 
 	if err:= c.ShouldBind(&filtermodel); err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		return
 	}
 
@@ -117,7 +121,7 @@ func ReadAllBook(c *gin.Context) {
 
 		if err != nil {
 			logs.Error(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 

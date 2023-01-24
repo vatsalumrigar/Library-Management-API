@@ -8,6 +8,7 @@ import (
 	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	localization "PR_2/localise"
 )
 
 // @Summary set new password for user 
@@ -15,12 +16,15 @@ import (
 // @Accept json
 // @Produce json
 // @Param payload body model.SetNewPassword true "Payload for Set New Password API"
+// @Param language header string true "languageToken"
 // @Success 201 {object} model.User
 // @Failure 400 {object} error
 // @Failure 406 {object} error
 // @Failure 500 {object} error
 // @Router /UserSetNewPassword/ [patch]
 func SetNewPasswordUser(c *gin.Context){
+
+	languageToken := c.Request.Header.Get("lan")
 
 	userCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -30,7 +34,7 @@ func SetNewPasswordUser(c *gin.Context){
 	defer cancel()
 
 	if err:= c.BindJSON(&userpwd); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		logs.Error(err.Error())
 		return
 	}
@@ -40,13 +44,13 @@ func SetNewPasswordUser(c *gin.Context){
 	err := userCollection.FindOne(ctx, bson.M{"Email": userpwd.Email}).Decode(&user)		
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		logs.Error(err.Error())
 		return
 	}
 
 	if user.Password != userpwd.OldPassword {
-		c.AbortWithStatusJSON(http.StatusNotAcceptable,gin.H{"error":"old password is incorrect"})
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, localization.GetMessage(languageToken,"SetNewPasswordUser.406"))
 		logs.Error("old password is incorrect")
 		return
 	}
@@ -59,7 +63,7 @@ func SetNewPasswordUser(c *gin.Context){
 	result, err := userCollection.UpdateOne(ctx,match,bson.M{"$set":update})
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		logs.Error(err.Error())
 		return
 	}
@@ -67,11 +71,11 @@ func SetNewPasswordUser(c *gin.Context){
 	res := map[string]interface{}{"data":result}
 
 	if result.ModifiedCount < 1 {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"SetNewPasswordUser.500"))
 		logs.Error(err.Error())
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "data updated successfully!", "Data": res})	
+	c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"SetNewPasswordUser.201"), "Data": res})	
 
 }

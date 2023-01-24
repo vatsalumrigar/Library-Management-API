@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	localization "PR_2/localise"
 )
 
 // @Summary check penalty of users
@@ -18,11 +19,14 @@ import (
 // @Accept json
 // @Produce json
 // @Param payload body model.PenaltyUsers true "Payload for Penalty Users API"
+// @Param language header string true "languageToken"
 // @Success 202 {object} model.IsPenalty
 // @Failure 400 {object} error
 // @Failure 500 {object} error
 // @Router /PenaltyUser/ [patch]
 func UserPenaltyCheck(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	bookCollection := database.GetCollection("Books")
 	userCollection := database.GetCollection("User")
@@ -34,7 +38,7 @@ func UserPenaltyCheck(c *gin.Context) {
 	
 	if err:= c.BindJSON(&penalty_user); err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		return
 	}
 
@@ -51,7 +55,7 @@ func UserPenaltyCheck(c *gin.Context) {
 
 		if err1 != nil {
 			logs.Error(err1.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err1.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 
@@ -65,7 +69,7 @@ func UserPenaltyCheck(c *gin.Context) {
 
 			if err2 != nil {
 				logs.Error(err2.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"message": err2.Error()})
+				c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 				return
 			}
 
@@ -86,7 +90,7 @@ func UserPenaltyCheck(c *gin.Context) {
 			
 			if daydiff == 0{
 				logs.Info("no pending penalty of user")
-				c.JSON(http.StatusAccepted, gin.H{"message": "no pending penalty of user"})
+				c.JSON(http.StatusAccepted, localization.GetMessage(languageToken,"UserPenaltyCheck.202"))
 				return
 			}
 
@@ -122,7 +126,7 @@ func UserPenaltyCheck(c *gin.Context) {
 				if err != nil {
 					
 					logs.Error(err.Error())
-					c.JSON(http.StatusInternalServerError, gin.H{"message": "could not updated user penalty"})
+					c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserPenaltyCheck.500"))
 					return
 
 				}

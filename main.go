@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"os"
 
+	localization "PR_2/localise"
 	logs "github.com/sirupsen/logrus"
 )
 
@@ -31,6 +32,7 @@ func init() {
 	logs.SetLevel(logs.InfoLevel)
   }
 
+
 func main() {
 
 	err := database.NewConnection()
@@ -38,8 +40,10 @@ func main() {
 	if err != nil {
 		fmt.Println("cannot connect")
 	}
+
+	localization.LoadBundel()
 	
-	router.Router()
+	router.Router()	
 		
 }
 

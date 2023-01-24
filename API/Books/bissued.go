@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,12 +17,15 @@ import (
 // @ID book-issued
 // @Produce json
 // @Param uId header string true "UserID"
+// @Param language header string true "languageToken"
 // @Success 200 {object}  model.BooksIssued
 // @Failure 403 {object} error
 // @Failure 404 {object} error
 // @Failure 500 {object} error
 // @Router /getIssuedBook/ [get]
 func IssuedBook(c *gin.Context){
+
+	languageToken := c.Request.Header.Get("lan")
 
 	userCollection := database.GetCollection("User")
 	bookCollection := database.GetCollection("Books")
@@ -35,7 +39,7 @@ func IssuedBook(c *gin.Context){
 
 		if !err {
 			logs.Error(err)
-			c.JSON(http.StatusNotFound, gin.H{"message": err})
+			c.JSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
 			return
 		}
 
@@ -48,13 +52,13 @@ func IssuedBook(c *gin.Context){
 		
 		if err1 != nil {
 			logs.Error(err1.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err1})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 
 		if lib.UserType != "Librarian"{
 			logs.Error("enter valid librairian token")
-			c.JSON(http.StatusForbidden, gin.H{"message": "enter valid librairian token"})
+			c.JSON(http.StatusForbidden, localization.GetMessage(languageToken,"IssuedBook.403"))
 			return
 		}
 
@@ -69,7 +73,7 @@ func IssuedBook(c *gin.Context){
 			if err != nil{
 
 				logs.Error(err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+				c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 				return
 
 			}
@@ -90,7 +94,7 @@ func IssuedBook(c *gin.Context){
 				if er != nil {
 	
 					logs.Error(er.Error())
-					c.JSON(http.StatusInternalServerError, gin.H{"message": er.Error()})
+					c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 					return
 	
 				}

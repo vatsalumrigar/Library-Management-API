@@ -8,7 +8,7 @@ import (
 	"math/rand"
 	"strings"
 	"time"
-
+    localization "PR_2/localise"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +21,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-    logs "github.com/sirupsen/logrus"
+	logs "github.com/sirupsen/logrus"
 )
 
 var (
@@ -63,6 +63,7 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
 // @ID user-signup
 // @Accept json
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param payload body model.User true "Payload for Signup API"
 // @Success 200 {object} model.User
 // @Failure 400 {object} error
@@ -72,117 +73,117 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
 // @Router /users/signup [post]
 func SignUp(c *gin.Context) {
 
-		var userCollection = database.GetCollection("User")
-		ctx, cancel := database.DbContext(10)
-        var user model.User
+    languageToken := c.Request.Header.Get("lan")
 
-        if err := c.BindJSON(&user); err != nil {
-            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-            logs.Error(err.Error())
-            return
-        }
+	var userCollection = database.GetCollection("User")
+	ctx, cancel := database.DbContext(10)
+    var user model.User
 
-        if user.UserType == "Librarian" {
+    if err := c.BindJSON(&user); err != nil {
+        c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
+        logs.Error(err.Error())
+        return
+    }
 
-            if middleware.Authentication(c) {
+    if user.UserType == "Librarian" {
 
-                ufname, _ := c.Get("first_name")
-                userfname := ufname.(string)
+        if middleware.Authentication(c) {
 
-                if userfname == "Admin" {
+            ufname, _ := c.Get("first_name")
+            userfname := ufname.(string)
 
-                    uId,err1 := c.Get("uid")
-                    fmt.Printf("uId: %v\n", uId)
+            if userfname == "Admin" {
 
-                    if !err1 {
-                        c.JSON(http.StatusNotFound, gin.H{"message": err1})
-                        logs.Error(err1)
-                        return
-                    }
-                }else {
-                    c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error":"enter admin token in header"})
-                    logs.Error("enter admin token in header")
+                uId,err1 := c.Get("uid")
+                fmt.Printf("uId: %v\n", uId)
+
+                if !err1 {
+                    c.JSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
+                    logs.Error(err1)
                     return
                 }
-        
             }else {
-                c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error":"admin not logged in"})
-                logs.Error("admin not logged in")
+                c.AbortWithStatusJSON(http.StatusConflict, localization.GetMessage(languageToken,"SignUp.409.error1"))
+                logs.Error("enter admin token in header")
                 return
             }
-
-        }
-
-        count, err := userCollection.CountDocuments(ctx, bson.M{"Email": user.Email})
-        fmt.Printf("count: %v\n", count)
-        defer cancel()
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while checking for the email"})
-            logs.Error("error occured while checking for the email")
+    
+        }else {
+            c.AbortWithStatusJSON(http.StatusConflict, localization.GetMessage(languageToken,"SignUp.409.error2"))
+            logs.Error("admin not logged in")
             return
         }
+
+    }
+
+    count, err := userCollection.CountDocuments(ctx, bson.M{"Email": user.Email})
+    fmt.Printf("count: %v\n", count)
+    defer cancel()
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"SignUp.500.error1"))
+        logs.Error("error occured while checking for the email")
+        return
+    }
 
         // password := HashPassword(user.Password)
 
-        rand.Seed(time.Now().UnixNano())
-        minSpecialChar := 1
-        minNum := 1
-        minUpperCase := 1
-        minLowerCase := 1
-        minlength := 8
-        maxlength := 15
-        passwordLength := rand.Intn(maxlength-minlength) + minlength
+    rand.Seed(time.Now().UnixNano())
+    minSpecialChar := 1
+    minNum := 1
+    minUpperCase := 1
+    minLowerCase := 1
+    minlength := 8
+    maxlength := 15
+    passwordLength := rand.Intn(maxlength-minlength) + minlength
 
-        password := generatePassword(passwordLength, minSpecialChar, minNum, minUpperCase, minLowerCase)
+    password := generatePassword(passwordLength, minSpecialChar, minNum, minUpperCase, minLowerCase)
 
-		user.Password = password
-		fmt.Println(password)
+	user.Password = password
+	fmt.Println(password)
 
-        user.IsFirstLogin = true
+    user.IsFirstLogin = true
   
-        count, err = userCollection.CountDocuments(ctx, bson.M{"Mobile_No": user.MobileNo})
-        defer cancel()
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while checking for the phone number"})
-            logs.Error("error occured while checking for the phone number")
-            return
-        }
+    count, err = userCollection.CountDocuments(ctx, bson.M{"Mobile_No": user.MobileNo})
+    defer cancel()
 
-        if count > 0 {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "the email or phone number already exists"})
-            logs.Error("the email or phone number already exists")
-            return
-        }
+    if err != nil {
 
-        /*user.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-        user.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-        user.ID = primitive.NewObjectID()
-        user.User_id = user.ID.Hex()
-        token, refreshToken, _ := helper.GenerateAllTokens(user.Email, user.Firstname, user.Lastname, user.User_id)
-        user.Token = token
-        user.Refresh_Token = refreshToken*/
+        c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"SignUp.500.error2"))
+        logs.Error("error occured while checking for the phone number")
+        return
 
-        user.ID = primitive.NewObjectID()
+    }
 
-        resultInsertionNumber, insertErr := userCollection.InsertOne(ctx, user)
+    if count > 0 {
 
-        if insertErr != nil {
-            msg := "User item was not created"
-            c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
-			logs.Error(msg)
-            return
-        }
-        defer cancel()
+        c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"SignUp.500.error3"))
+        logs.Error("the email or phone number already exists")
+        return
+            
+    }
 
-        c.JSON(http.StatusOK, resultInsertionNumber)
+    user.ID = primitive.NewObjectID()
 
-    //}
+    resultInsertionNumber, insertErr := userCollection.InsertOne(ctx, user)
+
+    if insertErr != nil {
+        msg := "User item was not created"
+        c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"SignUp.500.error4"))
+		logs.Error(msg)
+        return
+    }
+
+    defer cancel()
+
+    c.JSON(http.StatusOK, resultInsertionNumber)
+
 }
 
 // @Summary login user
 // @ID user-login
 // @Accept json
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param payload body model.Login true "Payload for login API"
 // @Success 200 {object} map[string][]string
 // @Failure 400 {object} error
@@ -190,6 +191,8 @@ func SignUp(c *gin.Context) {
 // @Router /users/login [post]
 func Login(c *gin.Context) {
 
+    languageToken := c.Request.Header.Get("lan")
+    
 	var userCollection = database.GetCollection("User")
 	
 	ctx, cancel := database.DbContext(10)
@@ -197,39 +200,47 @@ func Login(c *gin.Context) {
     var foundUser model.User
 
     if err := c.BindJSON(&user); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+        c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
         logs.Error(err.Error())
         return
-    }
 
+    }
 
     err := userCollection.FindOne(ctx, bson.M{"Email": user.Email}).Decode(&foundUser)
 
     defer cancel()
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
         logs.Error(err.Error())
         return
     }
 
     if foundUser.IsFirstLogin {
+
         if foundUser.Password != user.Password {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "passowrd is incorrect"})
+
+            c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"Login.500"))
             logs.Error("passowrd is incorrect")
             return
+
         }
-        c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"password expired": "please create new password through setnewpassword"})
+
+        c.AbortWithStatusJSON(http.StatusBadRequest, localization.GetMessage(languageToken,"Login.409"))
         logs.Error("password expired, please create new password through setnewpassword")
         return
+
     }
 
     passwordIsValid, msg := VerifyPassword(user.Password, foundUser.Password)
     defer cancel()
 
     if !passwordIsValid {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+
+        c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"Login.500"))
         logs.Error(msg)
         return
+
     }
 
     match := bson.M{"Email": foundUser.Email}
@@ -238,21 +249,18 @@ func Login(c *gin.Context) {
     _, err1 := userCollection.UpdateOne(ctx,match,bson.M{"$set":update})
     
     if err1 != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err1.Error()})
-        logs.Error(msg)
+        c.JSON(http.StatusInternalServerError,localization.GetMessage(languageToken,"500"))
+        logs.Error(err1.Error())
         return
      }
 
     token, refreshToken, _ := helper.GenerateAllTokens(foundUser.Email, foundUser.Firstname, foundUser.Lastname, foundUser.ID.Hex())
 
-    //helper.UpdateAllTokens(token, refreshToken, foundUser.ID.Hex())
 
 	var res = map[string]interface{}{
 		"token" : token,
 		"refreshtoken": refreshToken, 
 	}
-
-    // fmt.Printf("foundUser.ID.Hex(): %v\n", foundUser.ID.Hex())
 
 
     c.JSON(http.StatusOK, res)

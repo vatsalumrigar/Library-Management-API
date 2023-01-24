@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 )
 
 // @Summary check penalty of user
@@ -19,6 +20,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param librarianId header string true "LibrarianID"
+// @Param language header string true "languageToken"
 // @Param payload body model.Payload true "Query Payload for Penalty Check API"
 // @Success 201 {object} model.Accounting
 // @Failure 400 {object} error
@@ -28,6 +30,8 @@ import (
 // @Failure 500 {object} error
 // @Router /Accounting/penaltycheck [post]
 func AccountingPenaltyCheck(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	accountingCollection := database.GetCollection("Accounting")
 	userCollection := database.GetCollection("User")
@@ -40,7 +44,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 	if err:= c.BindJSON(&payload); err != nil {
 
 		logs.Error(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		return
 
 	}
@@ -51,7 +55,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 		if !err {
 			logs.Error(err)
-			c.JSON(http.StatusNotFound, gin.H{"message": err})
+			c.JSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
 			return
 		}
 
@@ -64,13 +68,13 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		
 		if err1 != nil {
 			logs.Error(err1.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err1})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 
 		if lib.UserType != "Librarian"{
 			logs.Error("enter valid librairian token")
-			c.JSON(http.StatusForbidden, gin.H{"message": "enter valid librairian token"})
+			c.JSON(http.StatusForbidden, localization.GetMessage(languageToken,"AccountingPenaltyCheck.403.error1"))
 			return
 		}
 
@@ -82,7 +86,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		
 		if err2 != nil {
 			logs.Error("cannot find user")
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "cannot find user"})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"AccountingPenaltyCheck.500.error1"))
 			return
 		}
 
@@ -93,7 +97,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 			if (book.Reason != 1) && (book.Reason != 2) && (book.Reason != 3) {
 
 				logs.Error("reason should be either 1, 2 or 3")
-				c.AbortWithStatusJSON(http.StatusNotAcceptable,gin.H{"error":"reason should be either 1, 2 or 3"})
+				c.AbortWithStatusJSON(http.StatusNotAcceptable, localization.GetMessage(languageToken,"AccountingPenaltyCheck.406"))
 				return
 
 			}		
@@ -108,7 +112,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 			if !bookfound {
 				logs.Error("user has no book called", book.BookTitle)
-				c.AbortWithStatusJSON(http.StatusForbidden,gin.H{"user has no book called" : book.BookTitle})
+				c.AbortWithStatusJSON(http.StatusForbidden, localization.GetMessage(languageToken,"AccountingPenaltyCheck.403.error2"))
 				return
 			}
 
@@ -118,7 +122,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		
 		if len(user.BooksTaken) == 0{
 			logs.Error("user has no books")
-			c.AbortWithStatusJSON(http.StatusNotFound,gin.H{"message": "user has no books"})
+			c.AbortWithStatusJSON(http.StatusNotFound, localization.GetMessage(languageToken,"AccountingPenaltyCheck.404"))
 			return	
 		}
 
@@ -146,7 +150,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		
 					if err3 != nil {
 						logs.Error("cannot find book")
-						c.JSON(http.StatusInternalServerError, gin.H{"message": "cannot find book"})
+						c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"AccountingPenaltyCheck.500.error2"))
 						return
 					}
 
@@ -214,7 +218,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 					if err != nil {
 						
 						logs.Error(err.Error())
-						c.JSON(http.StatusInternalServerError, gin.H{"message": "could not update user status or timepenaltycalc"})
+						c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"AccountingPenaltyCheck.500.error3"))
 						return
 	
 					}
@@ -230,7 +234,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 		
 				if err6 != nil {
 					logs.Error(err6.Error())
-					c.JSON(http.StatusInternalServerError, gin.H{"message": "cannot find absentbook"})
+					c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"AccountingPenaltyCheck.500.error4"))
 					return
 				}
 
@@ -297,7 +301,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 				if err != nil {
 					
 					logs.Error(err.Error())
-					c.JSON(http.StatusInternalServerError, gin.H{"message": "could not update user status or timepenaltycalc"})
+					c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"AccountingPenaltyCheck.500.error3"))
 					return
 
 				}
@@ -325,7 +329,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 		if err4 != nil {
 			logs.Error(err4.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "could not update user total penalty"})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"AccountingPenaltyCheck.500.error5"))
 			return
 
 		}
@@ -349,7 +353,7 @@ func AccountingPenaltyCheck(c *gin.Context) {
 	
 		if err5 != nil {
 			logs.Error(err5.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message":err5.Error() })
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 
@@ -366,14 +370,14 @@ func AccountingPenaltyCheck(c *gin.Context) {
 
 			if err6 != nil {
 				logs.Error(err6.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"message": "could not push books in pdetails"})
+				c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"AccountingPenaltyCheck.500.error6"))
 				return
 
 			}
 
 		}
 
-		c.JSON(http.StatusCreated, gin.H{"message": "Posted successfully"})
+		c.JSON(http.StatusCreated, localization.GetMessage(languageToken,"AccountingPenaltyCheck.201"))
 		return
 
 	}

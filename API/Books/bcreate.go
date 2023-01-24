@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 )
 
 // @Summary create book in book collection 
@@ -16,12 +17,15 @@ import (
 // @Accept json
 // @Produce json
 // @Param payload body model.Books true "Query Payload for create Book API"
+// @Param language header string true "languageToken"
 // @Success 201 {object} model.Books
 // @Failure 400 {object} error
 // @Failure 409 {object} error
 // @Failure 500 {object} error
 // @Router /Book/ [post]
 func CreateBook(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	bookCollection := database.GetCollection("Books")
 	ctx, cancel := database.DbContext(10)
@@ -32,7 +36,7 @@ func CreateBook(c *gin.Context) {
 	defer cancel()
 
 	if err := c.BindJSON(&book); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		logs.Error(err.Error())
 		return
 	} 
@@ -44,7 +48,7 @@ func CreateBook(c *gin.Context) {
 		if err != nil {
 
 			logs.Error(err.Error())
-			c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": err.Error() })
+			c.AbortWithStatusJSON(http.StatusConflict, localization.GetMessage(languageToken,"409"))
 			return
 	
 		}
@@ -66,7 +70,7 @@ func CreateBook(c *gin.Context) {
 		get1 := bookCollection.FindOne(ctx, bson.M{"Title": title}).Decode(&result)
 		if get1 != nil {
 			logs.Error(get1.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": get1.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 	
@@ -78,8 +82,6 @@ func CreateBook(c *gin.Context) {
 				},
 			
 		}
-		
-		c.JSON(http.StatusCreated, gin.H{"message": "qty updated successfully!", "Data": update})
 		
 		edited := bson.M {
 
@@ -97,9 +99,11 @@ func CreateBook(c *gin.Context) {
 	
 		if err != nil {
 			logs.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
+
+		c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"CreateBook.201.message1"), "Data": update})
 
 	} else {
 
@@ -123,11 +127,11 @@ func CreateBook(c *gin.Context) {
 
 		if err != nil {
 			logs.Error(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 
-		c.JSON(http.StatusCreated, gin.H{"message": "Posted successfully", "Data": res1})
+		c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"CreateBook.201.message2"), "Data": res1})
 
 	}
 

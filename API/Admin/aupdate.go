@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 )
 
 // @Summary update admin
@@ -16,6 +17,7 @@ import (
 // @Accept json
 // @Produce json
 // @Success 201 {object} model.User
+// @Param language header string true "languageToken"
 // @Param adminId path string true "AdminID" 
 // @Param payload body model.Admin true "Query Payload for update Admin API"
 // @Failure 400 {object} error
@@ -23,6 +25,8 @@ import (
 // @Router /updateAdmin/{adminId} [put]
 func UpdateAdmin(c *gin.Context) {
 	
+	languageToken := c.Request.Header.Get("lan")
+
 	adminCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
 	
@@ -36,7 +40,7 @@ func UpdateAdmin(c *gin.Context) {
 	
 	if err := c.BindJSON(&admin); err != nil {
 		logs.Error(err.Error())
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		return
 	}
 
@@ -55,13 +59,6 @@ func UpdateAdmin(c *gin.Context) {
 		"Address": admin.Address,
 
 	}
-	
-	/*val := validation.ValidateUmodel(ctx, admin.Email, admin.Username, admin.MobileNo, admin.Dob, admin.Status)
-
-	if val != nil {
-		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": val.Error() })
-		return
-	} */
 
 	result, err := adminCollection.UpdateOne(ctx, bson.M{"_Id": objId}, bson.M{"$set": edited})
 
@@ -69,16 +66,16 @@ func UpdateAdmin(c *gin.Context) {
 
 	if err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		return
 		}
 
 	if result.MatchedCount < 1 {
 		logs.Error("Data doesn't exist")
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UpdateAdmin.500"))
 		return
 	}
 			
-	c.JSON(http.StatusCreated, gin.H{"message": "data updated successfully!", "Data": res})	
+	c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"201"), "Data": res})	
 }
 

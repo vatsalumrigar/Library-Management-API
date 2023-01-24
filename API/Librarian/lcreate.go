@@ -7,18 +7,22 @@ import (
 	logs "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	localization "PR_2/localise"
 )
 
 // @Summary create librarian
 // @ID create-librarian
 // @Accept json
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param payload body model.User true "Payload for create Librarian API"
 // @Success 201 {object} model.User
 // @Failure 400 {object} error
 // @Failure 500 {object} error
 // @Router /Librarian/ [post]
 func CreateLibrarian(c *gin.Context){
+
+	languageToken := c.Request.Header.Get("lan")
 
 	librarianCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -29,7 +33,7 @@ func CreateLibrarian(c *gin.Context){
 
 	if err := c.BindJSON(&librarian); err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		return
 	}
 
@@ -55,10 +59,10 @@ func CreateLibrarian(c *gin.Context){
 
 	if err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error() })
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Posted successfully", "Data": res})
+	c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"CreateLibrarian.201"), "Data": res})
 
 }

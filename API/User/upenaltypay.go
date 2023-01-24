@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	localization "PR_2/localise"
 	logs "github.com/sirupsen/logrus"
 )
 
@@ -14,11 +15,14 @@ import (
 // @Accept json
 // @Produce json
 // @Param payload body model.PenaltyPay true "Payload for Penalty Pay API"
+// @Param language header string true "languageToken"
 // @Success 201 {object} model.User
 // @Failure 400 {object} error
 // @Failure 500 {object} error
 // @Router /PenaltyPay/ [patch]
 func UserPenaltyPay(c *gin.Context) {
+
+	languageToken := c.Request.Header.Get("lan")
 
 	userCollection := database.GetCollection("User")
 	ctx, cancel := database.DbContext(10)
@@ -29,7 +33,7 @@ func UserPenaltyPay(c *gin.Context) {
 	
 	if err:= c.BindJSON(&penalty_payer); err != nil {
 		logs.Error(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 		return
 	}
 
@@ -42,7 +46,7 @@ func UserPenaltyPay(c *gin.Context) {
 
 	if err1 != nil {
 		logs.Error(err1.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err1.Error()})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 		return
 	}
 
@@ -65,18 +69,18 @@ func UserPenaltyPay(c *gin.Context) {
 			if err != nil {
 					
 				logs.Error(err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+				c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 				return
 
 			}
 
-			c.JSON(http.StatusCreated, gin.H{"message": "penalty payed and book returned successfully successfully!"})	
+			c.JSON(http.StatusCreated, localization.GetMessage(languageToken,"UserPenaltyPay.201"))	
 			return
 
 	} else {
 
 		logs.Error("amount pay should be equal to total penalty:", user.Total_Penalty)
-		c.JSON(http.StatusInternalServerError, gin.H{"amount pay should be equal to total penalty": user.Total_Penalty})
+		c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserPenaltyPay.500"))
 		return
 
 	}

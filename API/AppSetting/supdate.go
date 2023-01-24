@@ -6,6 +6,7 @@ import (
 	model "PR_2/model"
 	"net/http"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,6 +17,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param adminId header string true "AdminID"
+// @Param language header string true "languageToken"
 // @Param payload body model.Timings true "Query Payload for update App Timings API"
 // @Success 201 {object} model.Timings
 // @Failure 400 {object} error
@@ -25,6 +27,8 @@ import (
 // @Failure 500 {object} error
 // @Router /UpdateSetting/ [put]
 func UpdateSetting(c *gin.Context){
+
+	languageToken := c.Request.Header.Get("lan")
 
 	if middleware.Authentication(c){
 
@@ -44,22 +48,26 @@ func UpdateSetting(c *gin.Context){
 		err := userCollection.FindOne(ctx, bson.M{"_Id": objId}).Decode(&admin)
 
 		if err != nil {
+
 			logs.Error(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "user not logged in"})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UpdateSetting.500.error1"))
 			return
+
 		}
 
 		if admin.UserType != "Admin" {
+
 			logs.Error("enter valid admin token")
-			c.AbortWithStatusJSON(http.StatusForbidden,gin.H{"error": "enter valid admin token"})
+			c.AbortWithStatusJSON(http.StatusForbidden, localization.GetMessage(languageToken,"UpdateSetting.403"))
 			return
+
 		}
 
 		setting := new(model.Timings)
 
 		if err := c.BindJSON(&setting); err != nil {
 			logs.Error(err.Error())
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, localization.GetMessage(languageToken,"400"))
 			return
 		}
 
@@ -75,13 +83,13 @@ func UpdateSetting(c *gin.Context){
 
 		if err != nil {
 			logs.Error(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 			}
 
 		if result.MatchedCount < 1 {
 			logs.Error("Data doesn't exist")
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "Data doesn't exist"})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UpdateSetting.500.error2"))
 			return
 		}
 				

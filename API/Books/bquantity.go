@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	logs "github.com/sirupsen/logrus"
+	localization "PR_2/localise"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -15,6 +16,7 @@ import (
 // @Summary get book title and their quantities from book collection
 // @ID quantity-book
 // @Produce json
+// @Param language header string true "languageToken"
 // @Param librarianId header string true "LibrarianID"
 // @Success 200 {object} []map[string]interface{}
 // @Failure 403 {string} string 
@@ -22,6 +24,8 @@ import (
 // @Failure 500 {string} string 
 // @Router /getQuantityBook/ [get]
 func QuantityBook(c *gin.Context){
+
+	languageToken := c.Request.Header.Get("lan")
 
 	userCollection := database.GetCollection("User")
 	bookCollection := database.GetCollection("Books")
@@ -35,7 +39,7 @@ func QuantityBook(c *gin.Context){
 
 		if !err {
 			logs.Error(err)
-			c.JSON(http.StatusNotFound, gin.H{"message": err})
+			c.JSON(http.StatusNotFound, localization.GetMessage(languageToken,"404"))
 			return
 		}
 
@@ -48,22 +52,24 @@ func QuantityBook(c *gin.Context){
 		
 		if err1 != nil {
 			logs.Error(err1.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err1})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 
 		if lib.UserType != "Librarian"{
 			logs.Error("enter valid librairian token")
-			c.JSON(http.StatusForbidden, gin.H{"message": "enter valid librairian token"})
+			c.JSON(http.StatusForbidden, localization.GetMessage(languageToken,"QuantityBook.403"))
 			return
 		}
 	
 	}
 
 	if !middleware.Authentication(c){
+
 		logs.Error("provide librarian token in header")
-		c.AbortWithStatusJSON(http.StatusNotAcceptable,gin.H{"message": "provide librarian token in header"})
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, localization.GetMessage(languageToken,"QuantityBook.406"))
 		return
+
 	}
 
 	match := bson.M{}
@@ -80,7 +86,7 @@ func QuantityBook(c *gin.Context){
 
 		if err != nil {
 			logs.Error(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message":err.Error()})
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
 
