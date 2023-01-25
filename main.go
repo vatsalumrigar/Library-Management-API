@@ -15,7 +15,6 @@ import (
 	router "PR_2/router"
 	"fmt"
 	"os"
-
 	localization "PR_2/localise"
 	logs "github.com/sirupsen/logrus"
 )
@@ -33,6 +32,7 @@ func init() {
   }
 
 
+
 func main() {
 
 	err := database.NewConnection()
@@ -40,9 +40,9 @@ func main() {
 	if err != nil {
 		fmt.Println("cannot connect")
 	}
-
-	localization.LoadBundel()
 	
+	localization.LoadBundel()
+
 	router.Router()	
 		
 }

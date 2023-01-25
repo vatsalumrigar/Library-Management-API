@@ -2,25 +2,20 @@ package controllers
 
 import (
 	middleware "PR_2/Middleware"
+	localization "PR_2/localise"
 	model "PR_2/model"
 	"fmt"
 	"log"
 	"math/rand"
+	"net/http"
 	"strings"
 	"time"
-    localization "PR_2/localise"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-
 	database "PR_2/databases"
 	helper "PR_2/helper"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-
 	"golang.org/x/crypto/bcrypt"
-
 	logs "github.com/sirupsen/logrus"
 )
 
@@ -52,7 +47,6 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
     if err != nil {
         msg = "passowrd is incorrect"
         check = false
-        logs.Error(msg)
     }
 
     return check, msg
