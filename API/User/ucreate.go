@@ -64,6 +64,7 @@ func CreateUser(c *gin.Context) {
 		UserType: user.UserType,
 		Firstname : user.Firstname,
 		Lastname : user.Lastname,
+		Fullname: user.Fullname,
 		Email : user.Email,
 		MobileNo : user.MobileNo,
 		Password : user.Password,

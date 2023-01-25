@@ -14,6 +14,7 @@ type User struct {
 	UserType string `json:"user_type" bson:"User_Type"`
 	Firstname string `json:"first_name" bson:"Firstname"`
 	Lastname string `json:"last_name" bson:"Lastname"`
+	Fullname map[string]interface{} `json:"full_name" bson:"Fullname"`
 	Email string `json:"email" bson:"Email" binding:"required"`
 	MobileNo string `json:"mobile_no" bson:"Mobile_No"`
 	Password string `json:"password" bson:"Password"`

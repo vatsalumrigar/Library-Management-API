@@ -12,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	logs "github.com/sirupsen/logrus"
 	localization "PR_2/localise"
-
 )
 
 // @Summary update user in user collection
@@ -64,6 +63,7 @@ func UpdateUser(c *gin.Context) {
 			"UserType" : user.UserType,
 			"Firstname" : user.Firstname,
 			"Lastname" : user.Lastname,
+			"Fullname": user.Fullname,
 			"Email" : user.Email ,
 			"MobileNo" : user.MobileNo ,
 			"Password" : hashpwd ,
