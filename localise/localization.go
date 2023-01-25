@@ -40,17 +40,3 @@ func GetMessage(lang string, id string) string {
 
 	return message
 }
-
-// func GetLanguage(c *gin.Context) bool {
-
-// 	languageHeader := c.Request.Header.Get("lan")
-		
-// 	if languageHeader == "" {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "No language header provided"})
-// 		c.Abort()
-// 		logs.Error("No langgauge header provided")
-// 		return false
-// 	}
-
-// 	return true
-// }
