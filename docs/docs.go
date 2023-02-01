@@ -2237,6 +2237,10 @@ const docTemplate = `{
                 "first_name": {
                     "type": "string"
                 },
+                "full_name": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
                 "isfirstlogin": {
                     "type": "boolean"
                 },

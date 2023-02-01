@@ -71,8 +71,8 @@
 
     "CreateBook": {
         "201":{
-            "message1": "error: message: qty updated successfully!",
-            "message2": "error: message: Posted successfully!"
+            "message1": "message: qty updated successfully!",
+            "message2": "message: Posted successfully!"
         }
     },
 

@@ -69,6 +69,7 @@ func UpdateBook(c *gin.Context) {
 		"Quantities" : book.Quantities,
 		"Status" : book.Status,	
 		"Penalty": book.Penalty,
+		"Cost": book.Cost,
 		
 	}
 	

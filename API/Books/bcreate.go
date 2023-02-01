@@ -93,6 +93,7 @@ func CreateBook(c *gin.Context) {
 			"Quantities" : qty,
 			"Status" : book.Status,	
 			"Penalty" : book.Penalty,
+			"Cost": book.Cost,
 			
 		}
 		err, _ := bookCollection.UpdateOne(ctx,bson.M{"Title": title},bson.M{"$set": edited})

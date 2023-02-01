@@ -338,6 +338,9 @@ definitions:
         type: string
       first_name:
         type: string
+      full_name:
+        additionalProperties: true
+        type: object
       isfirstlogin:
         type: boolean
       last_name:
