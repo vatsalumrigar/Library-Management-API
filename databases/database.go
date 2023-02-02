@@ -2,12 +2,13 @@ package database
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
-	"errors"
+
+	logs "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	logs "github.com/sirupsen/logrus"
 )
 
 type Connection struct {

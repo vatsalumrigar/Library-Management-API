@@ -17,7 +17,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func Router() {
+func Router() *gin.Engine {
 
 	// configure the Gin server
 	router := gin.Default()
@@ -75,4 +75,6 @@ func Router() {
 	// run the Gin server
 	router.Run("localhost:3000")
 
+	return router	
 }
+
