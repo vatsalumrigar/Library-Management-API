@@ -3,15 +3,16 @@ package accounting
 import (
 	middleware "PR_2/Middleware"
 	database "PR_2/databases"
+	localization "PR_2/localise"
 	model "PR_2/model"
 	"fmt"
 	"net/http"
 	"time"
-	logs "github.com/sirupsen/logrus"
+
 	"github.com/gin-gonic/gin"
+	logs "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	localization "PR_2/localise"
 )
 
 // @Summary pay penalty of user
@@ -66,6 +67,8 @@ func AccountingPenaltyPay(c *gin.Context){
 		var lib model.User
 
 		err1 := userCollection.FindOne(ctx, bson.M{"_Id": objId1}).Decode(&lib)
+
+		fmt.Printf("lib.Firstname: %v\n", lib.Firstname)
 		
 		if err1 != nil {
 			logs.Error(err1.Error())
@@ -88,6 +91,8 @@ func AccountingPenaltyPay(c *gin.Context){
 			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"500"))
 			return
 		}
+
+		fmt.Printf("user.Firstname: %v\n", user.Firstname)
 
 		if user.Total_Penalty == 0 {
 			logs.Error("user has no pending penalty")

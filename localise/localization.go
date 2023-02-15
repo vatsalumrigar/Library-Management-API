@@ -3,22 +3,28 @@ package localization
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
 )
 
 var Bundel *i18n.Bundle
 
-func LoadBundel() *i18n.Bundle {
+func LoadBundel(path string) *i18n.Bundle {
 
-	Languages := [2]string{"en","hi"}
-
+	Languages := [2]string{"en", "hi"}
 
 	Bundel = i18n.NewBundle(language.English)
 	Bundel.RegisterUnmarshalFunc("json", json.Unmarshal)
 
-	for _, lang := range Languages {
-		Bundel.MustLoadMessageFile(fmt.Sprintf("localise/%v.json", lang))
+	if path != "" {
+		for _, lang := range Languages {
+			Bundel.MustLoadMessageFile(fmt.Sprintf(path+"localise/%v.json", lang))
+		}
+	} else {
+		for _, lang := range Languages {
+			Bundel.MustLoadMessageFile(fmt.Sprintf("localise/%v.json", lang))
+		}
 	}
 
 	return Bundel
@@ -33,7 +39,7 @@ func GetMessage(lang string, id string) string {
 			ID: id,
 		},
 	})
-	
+
 	if err != nil || message == "" {
 		message = id
 	}

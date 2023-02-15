@@ -12,26 +12,25 @@ package main
 
 import (
 	database "PR_2/databases"
+	localization "PR_2/localise"
 	router "PR_2/router"
 	"fmt"
 	"os"
-	localization "PR_2/localise"
+
 	logs "github.com/sirupsen/logrus"
 )
 
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
 	logs.SetFormatter(&logs.JSONFormatter{})
-  
+
 	// Output to stdout instead of the default stderr
 	// Can be any io.Writer, see below for File example
 	logs.SetOutput(os.Stdout)
-  
+
 	// Only log the warning severity or above.
 	logs.SetLevel(logs.InfoLevel)
-  }
-
-
+}
 
 func main() {
 
@@ -40,10 +39,10 @@ func main() {
 	if err != nil {
 		fmt.Println("cannot connect")
 	}
-	
-	localization.LoadBundel()
 
-	router.Router()	
-		
+	localization.LoadBundel("")
+
+	router.Router()
+
 }
 

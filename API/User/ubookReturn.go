@@ -70,7 +70,7 @@ func UserBooksReturn(c *gin.Context) {
 				if !ns.After(srt) || !ns.Before(end) {
 
 					logs.Error (day.Day+"timings:"+ "from -"+day.StartTime+"to"+day.CloseTime)
-					c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBookReturn.500.error1"))
+					c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBooksReturn.500.error1"))
 					return
 
 				}  
@@ -78,7 +78,7 @@ func UserBooksReturn(c *gin.Context) {
 			} else {
 
 				logs.Error("library is closed on:", day.Day)
-				c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBookReturn.500.error2"))
+				c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBooksReturn.500.error2"))
 				return
 
 			}
@@ -123,13 +123,13 @@ func UserBooksReturn(c *gin.Context) {
 		
 		if err1 != nil {
 			logs.Error(err1.Error())
-			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBookReturn.500.error3"))
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBooksReturn.500.error3"))
 			return
 		}
 
 		if err2 != nil {
 			logs.Error(err2.Error())
-			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBookReturn.500.error4"))
+			c.JSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBooksReturn.500.error4"))
 			return
 		}
 
@@ -137,7 +137,7 @@ func UserBooksReturn(c *gin.Context) {
 
 		if len(bookstaken) == 0 {
 			logs.Error("user currently has no books")
-			c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBookReturn.500.error5"))
+			c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBooksReturn.500.error5"))
 			return
 		}
 
@@ -160,7 +160,7 @@ func UserBooksReturn(c *gin.Context) {
 		if notfound {
 
 			logs.Error("book not available with user")
-			c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBookReturn.500.error6"))
+			c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBooksReturn.500.error6"))
 			return
 			
 		}
@@ -184,7 +184,7 @@ func UserBooksReturn(c *gin.Context) {
 		if err != nil {
 	
 			logs.Error(err.Error())
-			c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBookReturn.500.error7"))
+			c.AbortWithStatusJSON(http.StatusInternalServerError, localization.GetMessage(languageToken,"UserBooksReturn.500.error7"))
 			return
 
 		} else {
@@ -217,7 +217,7 @@ func UserBooksReturn(c *gin.Context) {
 
 		}
 
-		c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"UserBookReturn.201"), "Data": booksreturn})
+		c.JSON(http.StatusCreated, gin.H{"message": localization.GetMessage(languageToken,"UserBooksReturn.201"), "Data": booksreturn})
 		
 	}
 }
