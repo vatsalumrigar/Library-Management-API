@@ -4,8 +4,6 @@ import (
 	user "PR_2/API/User"
 	database "PR_2/databases"
 	localization "PR_2/localise"
-
-	// model "PR_2/model"
 	"bytes"
 	"encoding/json"
 	"net/http"
@@ -44,6 +42,7 @@ func TestPenaltyPay201(t *testing.T) {
 	}
 
 }
+
 func TestPenaltyPay400(t *testing.T) {
 
 	database.NewConnection()
@@ -73,7 +72,6 @@ func TestPenaltyPay400(t *testing.T) {
 	}
 
 }
-
 
 func TestPenaltyPay500(t *testing.T) {
 

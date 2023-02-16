@@ -33,7 +33,6 @@ func Router() *gin.Engine {
 	router.PATCH("operationBook/",book.OperationBook)
 
 
-	router.POST("User/", user.CreateUser)
 	router.GET("getOneUser/", user.ReadOneUser) 
 	router.GET("getAllUser/", user.ReadAllUser)
 	router.PUT("/updateUser/", user.UpdateUser)
@@ -54,7 +53,6 @@ func Router() *gin.Engine {
 	router.PUT("/updateAdmin/:adminId", admin.UpdateAdmin)
 	router.DELETE("/deleteAdmin/:adminId", admin.DeleteAdmin)
 
-	router.POST("Librarian/", librarians.CreateLibrarian)
 	router.GET("getOneLibrarian/:librarianId", librarians.ReadOneLibrarian) 
 	router.GET("getAllLibrarian/", librarians.ReadAllLibrarian)
 	router.PUT("/updateLibrarian/:librarianId", librarians.UpdateLibrarian)

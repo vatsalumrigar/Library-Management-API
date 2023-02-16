@@ -42,6 +42,76 @@ func Login(email, password string) string {
 
 }
 
+func CreateUser() model.User {
+	
+	database.NewConnection()
+	localization.LoadBundel(path)
+
+	// payload := map[string]interface{}{
+
+	// 	"user_type" : "User",
+    //     "first_name": "Alex2",
+    //     "last_name": "Demola2",
+    //     "full_name": map[string]interface{}{
+    //         "en": "Alex Demola",
+    //         "hi": "एलेक्स डेमोला",
+    //     },
+    //     "email": "alex172@gmail.com",
+    //     "mobile_no": "8033101555",
+    //     "username": "alex_172",
+    //     "status": "Available",
+    //     "dob": "17/02/2002",
+    //     "login": true,
+    //     "total_penalty": 0,
+	// }
+
+	payload := model.User{
+		UserType:      "User",
+		Firstname:     "Alex2",
+		Lastname:      "Demola2",
+		Fullname:      map[string]interface{}{
+		    "en": "Alex Demola",
+            "hi": "एलेक्स डेमोला",
+		},
+		Email:         "alex172@gmail.com",
+		MobileNo:      "8033101555",
+		Username:      "",
+		BooksTaken:    []model.Bookdetails{},
+		Status:        "alex_172",
+		Dob:           "17/02/2002",
+		Login:         false,
+		Total_Penalty: 0,
+		Address:       model.Address{
+			Street:  "Althan",
+			City:    "Surat",
+			State:   "Gujarat",
+			Pincode: 395002,
+			Country: "India",
+		},
+	}
+
+	url := "http://localhost:3000/users/signup"
+
+	payloadToByte, _ := json.Marshal(payload)
+	payloadToReader := bytes.NewReader(payloadToByte)
+
+	request, _ := http.NewRequest("POST", url, payloadToReader)
+
+	r := gin.Default()
+	r.POST("/users/signup", controllers.SignUp)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, request)
+
+	var response map[string]string
+	json.Unmarshal(w.Body.Bytes(), &response)
+	return payload
+
+}
+
+func SetNewPassword(){
+	
+}
+
 func TestSignup200(t *testing.T) {
 
 	database.NewConnection()
